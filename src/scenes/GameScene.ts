@@ -141,6 +141,8 @@ export class GameScene extends Phaser.Scene {
 
   private startRound(): void {
     if (gameState.isWaveActive || gameState.isGameOver || gameState.isVictory) return
+    this.bloonManager.clear()
+    this.projectileManager.clear()
     gameState.round++
     this.roundSystem.startRound(gameState.round)
   }

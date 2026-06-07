@@ -239,6 +239,12 @@ export class ProjectileManager {
     }
   }
 
+  clear(): void {
+    for (const proj of this.pool) {
+      if (proj.active) proj.deactivate()
+    }
+  }
+
   detonateAoE(
     x: number,
     y: number,

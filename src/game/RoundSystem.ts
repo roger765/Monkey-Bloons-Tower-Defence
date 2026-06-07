@@ -11,10 +11,13 @@ interface SpawnEvent {
   isFortified: boolean
 }
 
+const POST_DRAIN_TIMEOUT = 15 // seconds to wait after last spawn before force-ending
+
 export class RoundSystem {
   private bloonManager: BloonManager
   private spawnQueue: SpawnEvent[] = []
   private timer: number = 0
+  private queueDrainedAt: number | null = null
   private onRoundEndCallback: ((round: number) => void) | null = null
 
   constructor(bloonManager: BloonManager) {
@@ -31,6 +34,7 @@ export class RoundSystem {
     if (!data) return
 
     this.timer = 0
+    this.queueDrainedAt = null
     this.spawnQueue = this.buildSpawnQueue(data)
     gameState.isWaveActive = true
   }
@@ -65,8 +69,20 @@ export class RoundSystem {
       this.bloonManager.spawn(event.bloonType, event.isCamo, event.isRegrow, event.isFortified)
     }
 
+    // Track when spawn queue drains so we can force-end if bloons get stuck
+    if (this.spawnQueue.length === 0 && this.queueDrainedAt === null) {
+      this.queueDrainedAt = this.timer
+    }
+
     // Check wave complete
     if (this.spawnQueue.length === 0 && this.bloonManager.activeCount === 0) {
+      this.endRound()
+      return
+    }
+
+    // Safety: if bloons are stuck active too long after spawning ends, force-end
+    if (this.queueDrainedAt !== null && this.timer - this.queueDrainedAt > POST_DRAIN_TIMEOUT) {
+      this.bloonManager.clear()
       this.endRound()
     }
   }
@@ -89,5 +105,6 @@ export class RoundSystem {
   reset(): void {
     this.spawnQueue = []
     this.timer = 0
+    this.queueDrainedAt = null
   }
 }
