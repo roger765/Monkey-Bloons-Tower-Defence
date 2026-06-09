@@ -112,6 +112,7 @@ export class TowerManager {
     if (!tower) return null
 
     this.towers.push(tower)
+    tower.playPlacementAnimation()
     tower.setInteractive()
     tower.on('pointerdown', () => this.selectTower(tower))
 
@@ -140,7 +141,7 @@ export class TowerManager {
       case 'alchemist': return new Alchemist(this.scene, x, y, this.bloonManager, this.projectileManager)
       case 'druid': return new Druid(this.scene, x, y, this.bloonManager, this.projectileManager)
       case 'banana_farm': return new BananaFarm(this.scene, x, y, this.bloonManager, this.projectileManager)
-      case 'spike_factory': return new SpikeFactory(this.scene, x, y, this.bloonManager, this.projectileManager)
+      case 'spike_factory': return new SpikeFactory(this.scene, x, y, this.bloonManager, this.projectileManager, this.track)
       case 'monkey_village': return new MonkeyVillage(this.scene, x, y, this.bloonManager, this.projectileManager)
       case 'engineer_monkey': return new EngineerMonkey(this.scene, x, y, this.bloonManager, this.projectileManager)
       case 'beast_handler': return new BeastHandler(this.scene, x, y, this.bloonManager, this.projectileManager)
@@ -179,6 +180,67 @@ export class TowerManager {
     for (const tower of this.towers) {
       tower.update(delta, time)
     }
+  }
+
+  notifyRoundEnd(): void {
+    for (const tower of this.towers) {
+      tower.onRoundEnd()
+    }
+  }
+
+  checkParagonEligibility(): { configId: string; name: string }[] {
+    const byType = new Map<string, BaseTower[]>()
+    for (const tower of this.towers) {
+      if (!byType.has(tower.config.id)) byType.set(tower.config.id, [])
+      byType.get(tower.config.id)!.push(tower)
+    }
+    const eligible: { configId: string; name: string }[] = []
+    for (const [configId, towers] of byType) {
+      const hasPath0 = towers.some(t => t.upgradeTiers[0] === 5)
+      const hasPath1 = towers.some(t => t.upgradeTiers[1] === 5)
+      const hasPath2 = towers.some(t => t.upgradeTiers[2] === 5)
+      if (hasPath0 && hasPath1 && hasPath2) {
+        const name = towers[0].config.id
+          .split('_').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')
+        eligible.push({ configId, name })
+      }
+    }
+    return eligible
+  }
+
+  mergeToParagon(configId: string): BaseTower | null {
+    const donors = this.towers.filter(t => t.config.id === configId)
+    const path0 = donors.find(t => t.upgradeTiers[0] === 5)
+    const path1 = donors.find(t => t.upgradeTiers[1] === 5)
+    const path2 = donors.find(t => t.upgradeTiers[2] === 5)
+    if (!path0 || !path1 || !path2) return null
+
+    const cx = path0.x
+    const cy = path0.y
+    const totalSpent = donors.reduce((s, t) => s + t.totalSpent, 0)
+
+    const uniqueDonors = [...new Set([path0, path1, path2])]
+    for (const t of uniqueDonors) {
+      const idx = this.towers.indexOf(t)
+      if (idx > -1) this.towers.splice(idx, 1)
+      if (this.selectedTower === t) {
+        this.selectedTower = null
+        this.onTowerSelectedCallback?.(null)
+      }
+      t.destroy()
+    }
+
+    const config = TOWER_CONFIGS.find(c => c.id === configId)
+    if (!config) return null
+
+    const paragon = this.createTower(config, cx, cy)
+    if (!paragon) return null
+
+    paragon.upgradeToParagon(totalSpent)
+    this.towers.push(paragon)
+    paragon.setInteractive()
+    paragon.on('pointerdown', () => this.selectTower(paragon))
+    return paragon
   }
 
   getTowers(): BaseTower[] {

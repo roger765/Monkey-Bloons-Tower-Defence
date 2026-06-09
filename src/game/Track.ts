@@ -33,15 +33,27 @@ export const MONKEY_MEADOW_WAYPOINTS: Waypoint[] = [
   { x: GAME_WIDTH + 10, y: MAP_TOP + MAP_HEIGHT_ACTUAL * 0.65 },
 ]
 
+interface TrackColors {
+  grass: number
+  track: number
+  border: number
+}
+
 export class Track {
   private segments: Segment[] = []
   totalLength: number = 0
   waypoints: Phaser.Math.Vector2[]
   private scene: Phaser.Scene
+  private colors: TrackColors
 
-  constructor(scene: Phaser.Scene, waypoints: Waypoint[]) {
+  constructor(scene: Phaser.Scene, waypoints: Waypoint[], colors?: Partial<TrackColors>) {
     this.scene = scene
     this.waypoints = waypoints.map(w => new Phaser.Math.Vector2(w.x, w.y))
+    this.colors = {
+      grass: colors?.grass ?? GRASS_COLOR,
+      track: colors?.track ?? TRACK_COLOR,
+      border: colors?.border ?? 0xA0804A,
+    }
     this.buildSegments()
   }
 
@@ -113,14 +125,12 @@ export class Track {
   }
 
   draw(graphics: Phaser.GameObjects.Graphics): void {
-    // Draw grass background for map area
     const mapTop = HUD_TOP_HEIGHT
     const mapBottom = GAME_HEIGHT - HUD_BOTTOM_HEIGHT
-    graphics.fillStyle(GRASS_COLOR, 1)
+    graphics.fillStyle(this.colors.grass, 1)
     graphics.fillRect(0, mapTop, GAME_WIDTH, mapBottom - mapTop)
 
-    // Draw track border (slightly wider, darker)
-    graphics.lineStyle(TRACK_WIDTH + 8, 0xA0804A, 1)
+    graphics.lineStyle(TRACK_WIDTH + 8, this.colors.border, 1)
     graphics.beginPath()
     graphics.moveTo(this.waypoints[0].x, this.waypoints[0].y)
     for (let i = 1; i < this.waypoints.length; i++) {
@@ -128,8 +138,7 @@ export class Track {
     }
     graphics.strokePath()
 
-    // Draw main track
-    graphics.lineStyle(TRACK_WIDTH, TRACK_COLOR, 1)
+    graphics.lineStyle(TRACK_WIDTH, this.colors.track, 1)
     graphics.beginPath()
     graphics.moveTo(this.waypoints[0].x, this.waypoints[0].y)
     for (let i = 1; i < this.waypoints.length; i++) {

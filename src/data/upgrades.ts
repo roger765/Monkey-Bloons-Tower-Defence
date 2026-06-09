@@ -525,8 +525,8 @@ export const SPIKE_PATH1: UpgradePath = [
 ]
 
 export const SPIKE_PATH2: UpgradePath = [
-  { name: 'Faster Production', cost: 200, description: 'Produces spike piles faster', effect: { cooldownMultiplier: 0.8 } },
-  { name: 'Even Faster Production', cost: 400, description: 'Even faster production', effect: { cooldownMultiplier: 0.75 } },
+  { name: 'Faster Production', cost: 200, description: 'Produces spike piles twice as fast', effect: { cooldownMultiplier: 0.5 } },
+  { name: 'Even Faster Production', cost: 400, description: 'Doubles production speed again', effect: { cooldownMultiplier: 0.5 } },
   { name: 'MOAB SHREDR Spikes', cost: 1000, description: 'Spikes deal 5× damage to MOAB-class', effect: { specialBehavior: 'moab_shredr', damageBonus: 2 } },
   { name: 'Viral Frost', cost: 3000, description: 'Spikes freeze bloons that touch them', effect: { specialBehavior: 'viral_frost_spike', newDamageType: DamageType.Cold } },
   { name: 'The Tack Zone', cost: 40000, description: 'Extremely rapid spike production, massive coverage', effect: { specialBehavior: 'the_tack_zone', cooldownMultiplier: 0.2, pierceBonus: 20 } },

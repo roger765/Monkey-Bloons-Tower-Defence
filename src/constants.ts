@@ -35,6 +35,13 @@ export const DIFFICULTIES: Record<GameDifficulty, DifficultyConfig> = {
     label: 'Hard',
     bloonSpeedMultiplier: 1.05,
   },
+  [GameDifficulty.FreePlay]: {
+    lives: 9999,
+    costMultiplier: 0,
+    endRound: 80,
+    label: 'Free Play',
+    bloonSpeedMultiplier: 1.0,
+  },
 }
 
 export const TARGETING_MODES = ['First', 'Last', 'Strong', 'Close', 'Far']

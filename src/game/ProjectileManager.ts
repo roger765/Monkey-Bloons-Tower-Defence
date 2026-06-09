@@ -61,6 +61,7 @@ export class Projectile extends Phaser.GameObjects.Arc {
   causesStun: boolean = false
   stunDuration: number = 1.5
   active: boolean = false
+  collisionRadius: number = 5
 
   constructor(scene: Phaser.Scene) {
     super(scene, 0, 0, 5, 0, 360, false, 0xFFFFFF)
@@ -72,6 +73,7 @@ export class Projectile extends Phaser.GameObjects.Arc {
   launch(cfg: ProjectileConfig): void {
     this.setPosition(cfg.x, cfg.y)
     this.setRadius(cfg.radius)
+    this.collisionRadius = cfg.radius
     this.setFillStyle(cfg.color)
     this.speed = cfg.speed
     this.damage = cfg.damage
@@ -132,7 +134,7 @@ export class Projectile extends Phaser.GameObjects.Arc {
       const dist = Phaser.Math.Distance.Between(this.x, this.y, bloon.x, bloon.y)
       const bloonR = bloon.bloonRadius ?? 14
 
-      if (dist <= this.radius + bloonR) {
+      if (dist <= this.collisionRadius + bloonR) {
         this.onHitBloon(bloon, time)
       }
     }
@@ -152,7 +154,12 @@ export class Projectile extends Phaser.GameObjects.Arc {
     } else if (this.isGlue) {
       applyGlue(bloon, this.glueDuration, this.glueSlowMult, this.canGlueMoab)
     } else {
-      if (!canHit(this.damageType, bloon)) return
+      if (!canHit(this.damageType, bloon)) {
+        // Projectile passes through immune/frozen bloons without consuming pierce,
+        // but we mark it so we don't retry every frame while still overlapping.
+        this.hitBloons.add(bloon)
+        return
+      }
       bloon.takeDamage(this.damage, this.damageType, time)
     }
 
@@ -192,13 +199,6 @@ export class Projectile extends Phaser.GameObjects.Arc {
     this.pierce = 0
   }
 
-  get radius(): number {
-    return (this as any)._radius ?? 5
-  }
-
-  set radius(val: number) {
-    this.setRadius(val)
-  }
 }
 
 export class ProjectileManager {
@@ -261,7 +261,7 @@ export class ProjectileManager {
       if (!bloon.active) continue
       if (pierce <= 0) break
       const dist = Phaser.Math.Distance.Between(x, y, bloon.x, bloon.y)
-      const bloonRadius = bloon.radius ?? 14
+      const bloonRadius = bloon.bloonRadius ?? 14
       if (dist <= radius + bloonRadius) {
         if (canHit(damageType, bloon)) {
           bloon.takeDamage(damage, damageType, time)
@@ -296,7 +296,7 @@ export class ProjectileManager {
     for (const bloon of bloons) {
       if (!bloon.active) continue
       const dist = Phaser.Math.Distance.Between(x, y, bloon.x, bloon.y)
-      const bloonRadius = bloon.radius ?? 14
+      const bloonRadius = bloon.bloonRadius ?? 14
       if (dist <= radius + bloonRadius) {
         applyFreeze(bloon, freezeDuration, canFreezeBlackWhite, canFreezeBlackWhite)
       }

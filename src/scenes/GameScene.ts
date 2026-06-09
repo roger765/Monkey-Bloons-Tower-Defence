@@ -1,7 +1,8 @@
 import Phaser from 'phaser'
 import { GAME_WIDTH, GAME_HEIGHT, HUD_TOP_HEIGHT, HUD_BOTTOM_HEIGHT } from '../constants'
 import { gameState } from '../game/GameState'
-import { Track, MONKEY_MEADOW_WAYPOINTS } from '../game/Track'
+import { Track } from '../game/Track'
+import { MAP_CONFIGS } from '../game/Maps'
 import { BloonManager } from '../game/BloonManager'
 import { ProjectileManager } from '../game/ProjectileManager'
 import { TowerManager } from '../game/TowerManager'
@@ -9,6 +10,7 @@ import { RoundSystem } from '../game/RoundSystem'
 import { HUD } from '../ui/HUD'
 import { TowerShop } from '../ui/TowerShop'
 import { TowerPanel } from '../ui/TowerPanel'
+import { FreePlaySpawner } from '../ui/FreePlaySpawner'
 import { TowerConfig } from '../types'
 
 export class GameScene extends Phaser.Scene {
@@ -20,6 +22,7 @@ export class GameScene extends Phaser.Scene {
   private hud!: HUD
   private shop!: TowerShop
   private towerPanel!: TowerPanel
+  private freePlaySpawner: FreePlaySpawner | null = null
   private mapGraphics!: Phaser.GameObjects.Graphics
   private pauseOverlay!: Phaser.GameObjects.Rectangle
   private pauseText!: Phaser.GameObjects.Text
@@ -34,7 +37,12 @@ export class GameScene extends Phaser.Scene {
     this.mapGraphics.setDepth(0)
 
     // Track
-    this.track = new Track(this, MONKEY_MEADOW_WAYPOINTS)
+    const mapCfg = MAP_CONFIGS[gameState.selectedMapId]
+    this.track = new Track(this, mapCfg.waypoints, {
+      grass: mapCfg.grassColor,
+      track: mapCfg.trackColor,
+      border: mapCfg.borderColor,
+    })
     this.track.draw(this.mapGraphics)
 
     // Systems
@@ -52,7 +60,10 @@ export class GameScene extends Phaser.Scene {
     this.hud.setCallbacks(
       () => this.startRound(),
       () => this.toggleSpeed(),
-      () => this.togglePause()
+      () => this.togglePause(),
+      () => this.exitToMenu(),
+      () => this.triggerParagon(),
+      () => this.towerManager.checkParagonEligibility()
     )
 
     // Shop selection
@@ -68,8 +79,19 @@ export class GameScene extends Phaser.Scene {
 
     // Round end callback
     this.roundSystem.onRoundEnd((round) => {
+      this.towerManager.notifyRoundEnd()
       this.hud.showRoundBonus(100 + round, round)
+      if (gameState.isFreePlay && round === gameState.endRound) {
+        this.hud.showFreePlayBanner()
+      }
     })
+
+    // Free Play bloon spawner panel
+    if (gameState.isFreePlay) {
+      this.freePlaySpawner = new FreePlaySpawner(this, (type, count, camo, regrow, fortified) => {
+        this.roundSystem.injectSpawns(type, count, camo, regrow, fortified)
+      })
+    }
 
     // Input
     this.setupInput()
@@ -156,6 +178,39 @@ export class GameScene extends Phaser.Scene {
     gameState.isPaused = !gameState.isPaused
     this.pauseOverlay.setVisible(gameState.isPaused)
     this.pauseText.setVisible(gameState.isPaused)
+  }
+
+  private triggerParagon(): void {
+    const eligible = this.towerManager.checkParagonEligibility()
+    if (eligible.length === 0) return
+    // Merge the first eligible tower type (or the only one)
+    const paragon = this.towerManager.mergeToParagon(eligible[0].configId)
+    if (paragon) {
+      this.towerManager.selectTower(paragon)
+      this.showParagonFanfare(eligible[0].name)
+    }
+  }
+
+  private showParagonFanfare(name: string): void {
+    const text = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 60,
+      `⬟ ${name.toUpperCase()} PARAGON\nDEGREE 1`, {
+      fontSize: '32px', color: '#FFD700', fontStyle: 'bold',
+      align: 'center', stroke: '#000000', strokeThickness: 5,
+    }).setOrigin(0.5).setDepth(300)
+
+    this.tweens.add({
+      targets: text,
+      y: text.y - 80,
+      alpha: 0,
+      duration: 3000,
+      ease: 'Power2',
+      onComplete: () => text.destroy(),
+    })
+  }
+
+  private exitToMenu(): void {
+    gameState.init(gameState.difficulty)
+    this.scene.start('MainMenuScene')
   }
 
   update(time: number, delta: number): void {

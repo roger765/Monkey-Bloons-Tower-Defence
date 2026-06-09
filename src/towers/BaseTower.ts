@@ -13,6 +13,7 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
   cooldownTimer: number = 0
   totalSpent: number = 0
   hasCamoDetection: boolean = false
+  isParagon: boolean = false
 
   // Effective stats (recalculated on upgrade)
   effectiveRange: number
@@ -26,7 +27,9 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
   protected body: Phaser.GameObjects.Arc
   protected barrel: Phaser.GameObjects.Rectangle
   protected barrelPivot: Phaser.GameObjects.Container
+  protected customGfx: Phaser.GameObjects.Graphics
   protected rangeVisible: boolean = false
+  private idleTween: Phaser.Tweens.Tween | null = null
 
   protected bloonManager: BloonManager
   protected projectileManager: ProjectileManager
@@ -70,6 +73,10 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
     this.body.setStrokeStyle(2.5, this.darkenHex(config.color, 0.45))
     this.add(this.body)
 
+    // Custom graphics layer — subclasses draw their unique shape here
+    this.customGfx = scene.add.graphics()
+    this.add(this.customGfx)
+
     // Barrel in a pivot container so it rotates around tower centre
     this.barrel = scene.add.rectangle(13, 0, 18, 7, this.darkenHex(config.color, 0.35))
     this.barrel.setStrokeStyle(1.5, this.darkenHex(config.color, 0.65))
@@ -88,6 +95,75 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
   setRangeVisible(visible: boolean): void {
     this.rangeVisible = visible
     this.rangeCircle.setVisible(visible)
+  }
+
+  playPlacementAnimation(): void {
+    this.setScale(0)
+    this.scene.tweens.add({
+      targets: this,
+      scaleX: 1.22, scaleY: 1.22,
+      duration: 220,
+      ease: 'Back.Out',
+      onComplete: () => {
+        this.scene.tweens.add({
+          targets: this,
+          scaleX: 1, scaleY: 1,
+          duration: 130,
+          ease: 'Power2.Out',
+          onComplete: () => this.startIdleAnimation(),
+        })
+      },
+    })
+  }
+
+  protected startIdleAnimation(): void {
+    this.idleTween = this.scene.tweens.add({
+      targets: this,
+      scaleX: 1.04, scaleY: 1.04,
+      duration: 1800,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.InOut',
+    })
+  }
+
+  playUpgradeAnimation(): void {
+    this.idleTween?.pause()
+
+    // Expanding gold ring
+    const ring = this.scene.add.arc(this.x, this.y, 18, 0, 360, false, 0xFFD700, 0)
+    ring.setStrokeStyle(3, 0xFFD700, 1)
+    ring.setDepth(40)
+    this.scene.tweens.add({
+      targets: ring,
+      scaleX: 3.5, scaleY: 3.5, alpha: 0,
+      duration: 450,
+      ease: 'Power2Out',
+      onComplete: () => ring.destroy(),
+    })
+
+    // Tower scale bounce
+    this.scene.tweens.add({
+      targets: this,
+      scaleX: 1.3, scaleY: 1.3,
+      duration: 100,
+      yoyo: true,
+      ease: 'Power3Out',
+      onComplete: () => {
+        this.setScale(1)
+        this.idleTween?.resume()
+      },
+    })
+
+    // Gold flash overlay
+    const flash = this.scene.add.arc(this.x, this.y, 22, 0, 360, false, 0xFFD700, 0.5)
+    flash.setDepth(40)
+    this.scene.tweens.add({
+      targets: flash, alpha: 0,
+      duration: 300,
+      ease: 'Power2Out',
+      onComplete: () => flash.destroy(),
+    })
   }
 
   update(delta: number, time: number): void {
@@ -120,6 +196,8 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
 
   abstract attack(target: Bloon, allBloons: Bloon[], time: number): void
 
+  onRoundEnd(): void {}
+
   tryUpgrade(path: 0 | 1 | 2): boolean {
     const tier = this.upgradeTiers[path]
     if (tier >= 5) return false
@@ -140,6 +218,8 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
     this.upgradeTiers[path]++
     this.applyUpgradeEffect(upgrade.effect, path)
     this.recomputeStats()
+    this.updateVisuals()
+    this.playUpgradeAnimation()
     return true
   }
 
@@ -159,6 +239,10 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
   protected recomputeStats(): void {
     // Called after any upgrade — subclasses can override for special behavior
     this.rangeCircle.setRadius(this.effectiveRange)
+  }
+
+  protected updateVisuals(): void {
+    // Subclasses override to redraw customGfx and recolor barrels on upgrade
   }
 
   protected darkenHex(color: number, factor: number): number {
@@ -195,6 +279,60 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
       ease: 'Power2Out',
       onComplete: () => flash.destroy(),
     })
+  }
+
+  upgradeToParagon(totalSpentAcrossDonors: number): void {
+    this.isParagon = true
+    this.totalSpent = totalSpentAcrossDonors
+    this.upgradeTiers = [5, 5, 5]
+    this.hasCamoDetection = true
+    this.effectiveDamage = this.config.damage * 10
+    this.effectivePierce = this.config.pierce * 5
+    this.effectiveRange = this.config.range * 1.5
+    this.effectiveCooldown = this.config.cooldown * 0.25
+    this.effectiveProjectileSpeed = this.config.projectileSpeed * 1.5
+    this.effectiveDamageType = DamageType.Normal
+
+    // Gold paragon body
+    this.body.setFillStyle(0xFFD700)
+    this.body.setStrokeStyle(3, 0xFF8800)
+    this.body.setRadius(24)
+    this.rangeCircle.setRadius(this.effectiveRange)
+
+    // Paragon animation — triple ring burst + continuous glow
+    this.idleTween?.destroy()
+    for (let i = 0; i < 3; i++) {
+      const r = this.scene.add.arc(this.x, this.y, 24, 0, 360, false, 0xFF8800, 0)
+      r.setStrokeStyle(3, i === 1 ? 0xFFFFFF : 0xFFD700, 1)
+      r.setDepth(40)
+      this.scene.tweens.add({
+        targets: r,
+        scaleX: 4, scaleY: 4, alpha: 0,
+        duration: 600,
+        delay: i * 120,
+        ease: 'Power2Out',
+        onComplete: () => r.destroy(),
+      })
+    }
+    this.scene.tweens.add({
+      targets: this,
+      scaleX: 1.5, scaleY: 1.5,
+      duration: 200,
+      yoyo: true,
+      ease: 'Power3Out',
+      onComplete: () => {
+        this.setScale(1)
+        this.startIdleAnimation()
+      },
+    })
+
+    // Diamond star marker
+    this.customGfx.clear()
+    this.customGfx.fillStyle(0xFF8800, 1)
+    this.customGfx.fillTriangle(-8, 0, 0, -14, 8, 0)
+    this.customGfx.fillTriangle(-8, 0, 0, 14, 8, 0)
+    this.barrel.setFillStyle(0xFF4400)
+    this.barrel.setStrokeStyle(1.5, 0x882200)
   }
 
   getSellValue(): number {

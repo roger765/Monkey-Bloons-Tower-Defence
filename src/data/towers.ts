@@ -324,7 +324,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     range: 80,
     cooldown: 1.5,
     damage: 1,
-    pierce: 6,
+    pierce: 1,
     damageType: DamageType.Sharp,
     projectileSpeed: 0,
     projectileRadius: 5,

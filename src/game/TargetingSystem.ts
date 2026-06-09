@@ -19,6 +19,7 @@ export function findTarget(
     const dist = Phaser.Math.Distance.Between(towerX, towerY, b.x, b.y)
     if (dist > range) return false
     if (b.isCamo && !hasCamoDetection) return false
+    if (!canHit(damageType, b)) return false
     return true
   })
 

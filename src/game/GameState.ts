@@ -1,8 +1,9 @@
-import { GameDifficulty, TargetingMode } from '../types'
+import { GameDifficulty, MapId } from '../types'
 import { DIFFICULTIES } from '../constants'
 
 export class GameState {
   difficulty: GameDifficulty = GameDifficulty.Easy
+  selectedMapId: MapId = MapId.MonkeyMeadow
   lives: number = 200
   maxLives: number = 200
   cash: number = 650
@@ -11,6 +12,7 @@ export class GameState {
   isWaveActive: boolean = false
   isGameOver: boolean = false
   isVictory: boolean = false
+  isFreePlay: boolean = false
   isPaused: boolean = false
   gameSpeed: number = 1
   totalBloonsPoppedAllTime: number = 0
@@ -29,6 +31,7 @@ export class GameState {
     this.isWaveActive = false
     this.isGameOver = false
     this.isVictory = false
+    this.isFreePlay = difficulty === GameDifficulty.FreePlay
     this.isPaused = false
     this.gameSpeed = 1
     this.totalBloonsPoppedAllTime = 0
@@ -63,6 +66,7 @@ export class GameState {
   }
 
   loseLife(count: number = 1): void {
+    if (this.isFreePlay) return
     this.lives = Math.max(0, this.lives - count)
     if (this.lives <= 0) {
       this.isGameOver = true

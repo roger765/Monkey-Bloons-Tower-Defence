@@ -118,6 +118,20 @@ export enum GameDifficulty {
   Easy = 'easy',
   Medium = 'medium',
   Hard = 'hard',
+  FreePlay = 'free_play',
+}
+
+export enum MapId {
+  MonkeyMeadow = 'monkey_meadow',
+  FrozenTundra = 'frozen_tundra',
+  LavaLair = 'lava_lair',
+  SunsetSavanna = 'sunset_savanna',
+  CandyCanyon = 'candy_canyon',
+  DarkCastle = 'dark_castle',
+  DeepSea = 'deep_sea',
+  StormRidge = 'storm_ridge',
+  AncientRuins = 'ancient_ruins',
+  NeonCity = 'neon_city',
 }
 
 export interface DifficultyConfig {
