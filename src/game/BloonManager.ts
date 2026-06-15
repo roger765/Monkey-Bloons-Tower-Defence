@@ -26,7 +26,6 @@ export class Bloon extends Phaser.GameObjects.Container {
   track: Track
   manager: BloonManager
   private circle: Phaser.GameObjects.Arc
-  private moabRect: Phaser.GameObjects.Rectangle | null = null
   private camoOverlay: Phaser.GameObjects.Arc | null = null
   private regrowOverlay: Phaser.GameObjects.Arc | null = null
   private fortifiedOverlay: Phaser.GameObjects.Arc | null = null
@@ -44,11 +43,6 @@ export class Bloon extends Phaser.GameObjects.Container {
     this.maxHp = 1
 
     const cfg = BLOON_CONFIGS[BloonType.Red]
-    if (cfg.isMoabClass) {
-      this.moabRect = scene.add.rectangle(0, 0, cfg.radius * 2.5, cfg.radius * 1.5, cfg.color)
-      this.moabRect.setStrokeStyle(3, cfg.outlineColor)
-      this.add(this.moabRect)
-    }
     this.circle = scene.add.arc(0, 0, cfg.radius, 0, 360, false, cfg.color)
     this.circle.setStrokeStyle(2, cfg.outlineColor)
     this.add(this.circle)
@@ -101,28 +95,18 @@ export class Bloon extends Phaser.GameObjects.Container {
     const cfg = BLOON_CONFIGS[this.bloonType]
 
     // Resize/recolor circle
-    if (this.moabRect) {
-      this.remove(this.moabRect)
-      this.moabRect.destroy()
-      this.moabRect = null
-    }
-
     this.circle.setRadius(cfg.radius)
     this.circle.setFillStyle(cfg.color)
     this.circle.setStrokeStyle(2, cfg.outlineColor)
 
     if (cfg.isMoabClass) {
-      this.moabRect = this.scene.add.rectangle(0, 0, cfg.radius * 2.8, cfg.radius * 1.6, cfg.color)
-      this.moabRect.setStrokeStyle(4, cfg.outlineColor)
-      this.addAt(this.moabRect, 0)
-      // Label for MOAB class
       const label = this.scene.add.text(0, 0, cfg.displayName.split('.').join(''), {
         fontSize: `${Math.max(8, cfg.radius * 0.4)}px`,
         color: '#ffffff',
         fontStyle: 'bold',
       }).setOrigin(0.5)
       this.add(label)
-      this.circle.setAlpha(0) // hide circle for moabs
+      this.circle.setAlpha(0)
     }
 
     // HP bar for multi-HP bloons
@@ -166,11 +150,63 @@ export class Bloon extends Phaser.GameObjects.Container {
     this.balloonGfx.clear()
 
     if (cfg.isMoabClass) {
-      // Shine stripe across upper portion of blimp
-      this.balloonGfx.fillStyle(0xFFFFFF, 0.18)
-      this.balloonGfx.fillRoundedRect(-r * 1.1, -r * 0.72, r * 2.2, r * 0.32, 4)
-      this.balloonGfx.fillStyle(0xFFFFFF, 0.08)
-      this.balloonGfx.fillRoundedRect(-r * 0.8, -r * 0.35, r * 1.6, r * 0.18, 3)
+      const hw = r * 1.4   // half-length (nose-to-tail)
+      const hh = r * 0.62  // half-height
+
+      // Tail fins — drawn first so the hull ellipse covers their inner portions
+      this.balloonGfx.fillStyle(cfg.outlineColor, 0.9)
+      this.balloonGfx.fillTriangle(
+        -hw * 0.55, -hh * 0.6,
+        -hw * 1.25, -hh * 1.6,
+        -hw * 0.25, -hh * 0.45
+      )
+      this.balloonGfx.fillTriangle(
+        -hw * 0.55, hh * 0.6,
+        -hw * 1.25, hh * 1.6,
+        -hw * 0.25, hh * 0.45
+      )
+
+      // Main cigar hull
+      this.balloonGfx.fillStyle(cfg.color, 1.0)
+      this.balloonGfx.fillEllipse(0, 0, hw * 2, hh * 2)
+      this.balloonGfx.lineStyle(3, cfg.outlineColor, 1.0)
+      this.balloonGfx.strokeEllipse(0, 0, hw * 2, hh * 2)
+
+      // Panel ribs (vertical lines clipped to ellipse chord)
+      this.balloonGfx.lineStyle(1.5, cfg.outlineColor, 0.3)
+      for (const t of [-0.55, -0.1, 0.35, 0.75]) {
+        const chord = hh * Math.sqrt(Math.max(0, 1 - t * t)) * 0.92
+        this.balloonGfx.lineBetween(t * hw, -chord, t * hw, chord)
+      }
+
+      // Gondola
+      const gx = -hw * 0.32
+      const gy = hh * 0.48
+      const gw = hw * 0.64
+      const gh = hh * 0.58
+      this.balloonGfx.fillStyle(0x111122, 0.88)
+      this.balloonGfx.fillRoundedRect(gx, gy, gw, gh, 3)
+      this.balloonGfx.lineStyle(1.5, cfg.outlineColor, 0.75)
+      this.balloonGfx.strokeRoundedRect(gx, gy, gw, gh, 3)
+
+      // Gondola windows
+      this.balloonGfx.fillStyle(0xCCEEFF, 0.7)
+      const winY = gy + gh * 0.42
+      const winR = r * 0.075
+      this.balloonGfx.fillCircle(-hw * 0.12, winY, winR)
+      this.balloonGfx.fillCircle(0, winY, winR)
+      this.balloonGfx.fillCircle(hw * 0.12, winY, winR)
+
+      // Suspension lines from hull underside to gondola roof
+      this.balloonGfx.lineStyle(1, cfg.outlineColor, 0.45)
+      this.balloonGfx.lineBetween(-hw * 0.28, hh * 0.85, gx + gw * 0.1, gy)
+      this.balloonGfx.lineBetween(hw * 0.28, hh * 0.85, gx + gw * 0.9, gy)
+
+      // Upper shine highlight
+      this.balloonGfx.fillStyle(0xFFFFFF, 0.22)
+      this.balloonGfx.fillEllipse(-hw * 0.1, -hh * 0.52, hw * 1.5, hh * 0.36)
+      this.balloonGfx.fillStyle(0xFFFFFF, 0.1)
+      this.balloonGfx.fillEllipse(hw * 0.15, -hh * 0.18, hw * 0.65, hh * 0.2)
       return
     }
 
@@ -216,6 +252,11 @@ export class Bloon extends Phaser.GameObjects.Container {
     const pos = this.track.getPositionAt(this.distanceAlongTrack)
     this.setPosition(pos.x, pos.y)
     this.setDepth(10 + this.distanceAlongTrack * 0.001)
+    this.setRotation(
+      BLOON_CONFIGS[this.bloonType].isMoabClass
+        ? this.track.getAngleAt(this.distanceAlongTrack)
+        : 0
+    )
 
     // Tick status effects
     this.tickStatusEffects(delta, time)

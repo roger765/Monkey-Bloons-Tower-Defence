@@ -19,6 +19,8 @@ export class GameState {
   totalCashEarned: number = 0
   selectedTowerId: string | null = null
   placingTowerId: string | null = null
+  selectedHeroId: string | null = null  // persists across games — not reset in init()
+  heroPlacedOnMap: boolean = false
 
   init(difficulty: GameDifficulty): void {
     const config = DIFFICULTIES[difficulty]
@@ -38,6 +40,8 @@ export class GameState {
     this.totalCashEarned = 650
     this.selectedTowerId = null
     this.placingTowerId = null
+    this.heroPlacedOnMap = false
+    // selectedHeroId intentionally NOT reset — hero choice persists between games
   }
 
   getCostMultiplier(): number {

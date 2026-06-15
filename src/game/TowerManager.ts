@@ -29,6 +29,9 @@ import { ProjectileManager } from './ProjectileManager'
 import { Track } from './Track'
 import { gameState } from './GameState'
 import { TOWER_CONFIGS } from '../data/towers'
+import { HERO_CONFIGS } from '../data/heroes'
+import { SavedTower } from './SaveManager'
+import { HeroTower } from '../towers/HeroTower'
 import { HUD_TOP_HEIGHT, HUD_BOTTOM_HEIGHT, GAME_HEIGHT } from '../constants'
 
 export class TowerManager {
@@ -85,7 +88,16 @@ export class TowerManager {
     this.placementRing.setStrokeStyle(2, valid ? 0x00FF00 : 0xFF0000, 0.6)
   }
 
+  private isWaterTower(towerId: string | null): boolean {
+    return towerId === 'monkey_sub' || towerId === 'monkey_buccaneer'
+  }
+
   isValidPlacement(x: number, y: number): boolean {
+    const onPond = this.track.isOnPond(x, y)
+    const waterTower = this.isWaterTower(gameState.placingTowerId)
+    // Water towers must be on water; land towers must not be on water
+    if (waterTower && !onPond) return false
+    if (!waterTower && onPond) return false
     // Not on track
     if (this.track.isOnTrack(x, y, 30)) return false
     // Not on HUD areas
@@ -103,10 +115,19 @@ export class TowerManager {
     if (!this.isValidPlacement(x, y)) return null
 
     const config = TOWER_CONFIGS.find(t => t.id === configId)
+      ?? HERO_CONFIGS.find(h => h.id === configId)
     if (!config) return null
 
-    if (!gameState.canAfford(config.cost)) return null
-    gameState.spend(config.cost)
+    if (config.isHero) {
+      // Heroes always cost their fixed price — no difficulty scaling
+      if (gameState.heroPlacedOnMap) return null
+      if (gameState.cash < config.cost) return null
+      gameState.cash -= config.cost
+      gameState.heroPlacedOnMap = true
+    } else {
+      if (!gameState.canAfford(config.cost)) return null
+      gameState.spend(config.cost)
+    }
 
     const tower = this.createTower(config, x, y)
     if (!tower) return null
@@ -121,6 +142,9 @@ export class TowerManager {
   }
 
   private createTower(config: TowerConfig, x: number, y: number): BaseTower | null {
+    if (config.isHero) {
+      return new HeroTower(this.scene, x, y, config, this.bloonManager, this.projectileManager)
+    }
     switch (config.id) {
       case 'dart_monkey': return new DartMonkey(this.scene, x, y, this.bloonManager, this.projectileManager)
       case 'boomerang_monkey': return new BoomerangMonkey(this.scene, x, y, this.bloonManager, this.projectileManager)
@@ -135,7 +159,7 @@ export class TowerManager {
       case 'heli_pilot': return new HeliPilot(this.scene, x, y, this.bloonManager, this.projectileManager)
       case 'mortar_monkey': return new MortarMonkey(this.scene, x, y, this.bloonManager, this.projectileManager)
       case 'dartling_gunner': return new DartlingGunner(this.scene, x, y, this.bloonManager, this.projectileManager)
-      case 'wizard_monkey': return new WizardMonkey(this.scene, x, y, this.bloonManager, this.projectileManager)
+      case 'wizard_monkey': return new WizardMonkey(this.scene, x, y, this.bloonManager, this.projectileManager, this.track)
       case 'super_monkey': return new SuperMonkey(this.scene, x, y, this.bloonManager, this.projectileManager)
       case 'ninja_monkey': return new NinjaMonkey(this.scene, x, y, this.bloonManager, this.projectileManager)
       case 'alchemist': return new Alchemist(this.scene, x, y, this.bloonManager, this.projectileManager)
@@ -143,7 +167,7 @@ export class TowerManager {
       case 'banana_farm': return new BananaFarm(this.scene, x, y, this.bloonManager, this.projectileManager)
       case 'spike_factory': return new SpikeFactory(this.scene, x, y, this.bloonManager, this.projectileManager, this.track)
       case 'monkey_village': return new MonkeyVillage(this.scene, x, y, this.bloonManager, this.projectileManager)
-      case 'engineer_monkey': return new EngineerMonkey(this.scene, x, y, this.bloonManager, this.projectileManager)
+      case 'engineer_monkey': return new EngineerMonkey(this.scene, x, y, this.bloonManager, this.projectileManager, this.track)
       case 'beast_handler': return new BeastHandler(this.scene, x, y, this.bloonManager, this.projectileManager)
       default: return null
     }
@@ -152,6 +176,7 @@ export class TowerManager {
   sellTower(tower: BaseTower): number {
     const refund = tower.getSellValue()
     gameState.earn(refund)
+    if (tower.config.isHero) gameState.heroPlacedOnMap = false
     const idx = this.towers.indexOf(tower)
     if (idx > -1) this.towers.splice(idx, 1)
     tower.destroy()
@@ -176,7 +201,53 @@ export class TowerManager {
     return this.selectedTower
   }
 
+  private updateVillageBuffs(): void {
+    // Reset support buffs on every tower each frame
+    for (const tower of this.towers) {
+      tower.villageDamageBonus = 0
+      tower.villagePierceBonus = 0
+      tower.villageSpeedMultiplier = 1.0
+    }
+
+    // Apply MonkeyVillage buffs
+    for (const village of this.towers) {
+      if (village.config.id !== 'monkey_village') continue
+      const mv = village as MonkeyVillage
+      const buffs = mv.getVillageBuffs()
+      if (buffs.speedMultiplier === 1.0 && buffs.damageBonus === 0 && buffs.pierceBonus === 0) continue
+
+      for (const tower of this.towers) {
+        if (tower === village) continue
+        const dist = Phaser.Math.Distance.Between(village.x, village.y, tower.x, tower.y)
+        if (dist <= village.effectiveRange) {
+          tower.villageDamageBonus += buffs.damageBonus
+          tower.villagePierceBonus += buffs.pierceBonus
+          tower.villageSpeedMultiplier *= buffs.speedMultiplier
+        }
+      }
+    }
+
+    // Apply Alchemist buffs (slightly weaker than village, stacks with village)
+    for (const alch of this.towers) {
+      if (alch.config.id !== 'alchemist') continue
+      const a = alch as Alchemist
+      const buffs = a.getAlchemistBuffs()
+      if (buffs.speedMultiplier === 1.0 && buffs.damageBonus === 0 && buffs.pierceBonus === 0) continue
+
+      for (const tower of this.towers) {
+        if (tower === alch) continue
+        const dist = Phaser.Math.Distance.Between(alch.x, alch.y, tower.x, tower.y)
+        if (dist <= alch.effectiveRange) {
+          tower.villageDamageBonus += buffs.damageBonus
+          tower.villagePierceBonus += buffs.pierceBonus
+          tower.villageSpeedMultiplier *= buffs.speedMultiplier
+        }
+      }
+    }
+  }
+
   update(delta: number, time: number): void {
+    this.updateVillageBuffs()
     for (const tower of this.towers) {
       tower.update(delta, time)
     }
@@ -241,6 +312,23 @@ export class TowerManager {
     paragon.setInteractive()
     paragon.on('pointerdown', () => this.selectTower(paragon))
     return paragon
+  }
+
+  loadSavedTowers(savedTowers: SavedTower[]): void {
+    for (const saved of savedTowers) {
+      const config: TowerConfig | undefined =
+        TOWER_CONFIGS.find(t => t.id === saved.configId) ??
+        HERO_CONFIGS.find(h => h.id === saved.configId)
+      if (!config) continue
+
+      const tower = this.createTower(config, saved.x, saved.y)
+      if (!tower) continue
+
+      tower.restoreFromSave(saved.upgradeTiers, saved.targeting, saved.totalSpent, saved.isParagon)
+      this.towers.push(tower)
+      tower.setInteractive()
+      tower.on('pointerdown', () => this.selectTower(tower))
+    }
   }
 
   getTowers(): BaseTower[] {

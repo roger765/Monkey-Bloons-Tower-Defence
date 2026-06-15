@@ -1,5 +1,5 @@
 import { MapId } from '../types'
-import { Waypoint } from './Track'
+import { Waypoint, Pond } from './Track'
 import { GAME_WIDTH, GAME_HEIGHT, HUD_TOP_HEIGHT, HUD_BOTTOM_HEIGHT } from '../constants'
 
 const T = HUD_TOP_HEIGHT
@@ -17,6 +17,7 @@ export interface MapConfig {
   trackColor: number
   borderColor: number
   waypoints: Waypoint[]
+  ponds: Pond[]
 }
 
 export const MAP_CONFIGS: Record<MapId, MapConfig> = {
@@ -43,6 +44,10 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: 1060,      y: T + H * 0.65 },
       { x: W + 10,    y: T + H * 0.65 },
     ],
+    ponds: [
+      { x: W * 0.24, y: T + H * 0.62, radius: 58 },
+      { x: W * 0.87, y: T + H * 0.17, radius: 48 },
+    ],
   },
 
   [MapId.SunsetSavanna]: {
@@ -62,6 +67,10 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: W * 0.68,  y: T + H * 0.32 },
       { x: W * 0.86,  y: T + H * 0.62 },
       { x: W + 10,    y: T + H * 0.62 },
+    ],
+    ponds: [
+      { x: W * 0.08, y: T + H * 0.82, radius: 55 },
+      { x: W * 0.92, y: T + H * 0.15, radius: 50 },
     ],
   },
 
@@ -87,6 +96,10 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: W * 0.88,  y: T + H * 0.72 },
       { x: W + 10,    y: T + H * 0.72 },
     ],
+    ponds: [
+      { x: W * 0.30, y: T + H * 0.50, radius: 62 },
+      { x: W * 0.54, y: T + H * 0.50, radius: 52 },
+    ],
   },
 
   [MapId.CandyCanyon]: {
@@ -109,6 +122,10 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: W * 0.78,  y: T + H * 0.78 },
       { x: W * 0.90,  y: T + H * 0.48 },
       { x: W + 10,    y: T + H * 0.32 },
+    ],
+    ponds: [
+      { x: W * 0.12, y: T + H * 0.82, radius: 55 },
+      { x: W * 0.88, y: T + H * 0.75, radius: 52 },
     ],
   },
 
@@ -134,6 +151,10 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: W * 0.90,  y: T + H * 0.35 },
       { x: W + 10,    y: T + H * 0.35 },
     ],
+    ponds: [
+      { x: W * 0.58, y: T + H * 0.45, radius: 58 },
+      { x: W * 0.85, y: T + H * 0.68, radius: 48 },
+    ],
   },
 
   // ─── Advanced ───────────────────────────────────────────────────────────────
@@ -155,6 +176,10 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: W * 0.80,  y: T + H * 0.60 },
       { x: W + 10,    y: T + H * 0.60 },
     ],
+    ponds: [
+      { x: W * 0.08, y: T + H * 0.25, radius: 52 },
+      { x: W * 0.90, y: T + H * 0.82, radius: 58 },
+    ],
   },
 
   [MapId.DeepSea]: {
@@ -175,6 +200,10 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: W * 0.60,  y: T + H * 0.40 },
       { x: W * 0.60,  y: T + H * 0.62 },
       { x: W + 10,    y: T + H * 0.62 },
+    ],
+    ponds: [
+      { x: W * 0.88, y: T + H * 0.55, radius: 62 },
+      { x: W * 0.10, y: T + H * 0.65, radius: 52 },
     ],
   },
 
@@ -201,6 +230,10 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: W * 0.82,  y: T + H * 0.40 },
       { x: W + 10,    y: T + H * 0.40 },
     ],
+    ponds: [
+      { x: W * 0.35, y: T + H * 0.50, radius: 48 },
+      { x: W * 0.92, y: T + H * 0.62, radius: 52 },
+    ],
   },
 
   // ─── Expert ─────────────────────────────────────────────────────────────────
@@ -226,6 +259,10 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: W * 0.86,  y: T + H * 0.55 },
       { x: W + 10,    y: T + H * 0.55 },
     ],
+    ponds: [
+      { x: W * 0.04, y: T + H * 0.10, radius: 38 },
+      { x: W * 0.93, y: T + H * 0.78, radius: 52 },
+    ],
   },
 
   [MapId.NeonCity]: {
@@ -248,6 +285,10 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: W * 0.85,  y: T + H * 0.30 },
       { x: W * 0.85,  y: T + H * 0.62 },
       { x: W + 10,    y: T + H * 0.62 },
+    ],
+    ponds: [
+      { x: W * 0.09, y: T + H * 0.45, radius: 52 },
+      { x: W * 0.30, y: T + H * 0.83, radius: 48 },
     ],
   },
 }

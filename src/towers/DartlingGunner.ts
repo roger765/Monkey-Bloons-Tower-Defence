@@ -8,6 +8,8 @@ export class DartlingGunner extends BaseTower {
   private spreadShots: number = 0
   private sideBarrel1!: Phaser.GameObjects.Rectangle
   private sideBarrel2!: Phaser.GameObjects.Rectangle
+  private laserGfx: Phaser.GameObjects.Graphics | null = null
+  private laserTween: Phaser.Tweens.Tween | null = null
 
   constructor(
     scene: Phaser.Scene, x: number, y: number,
@@ -85,6 +87,7 @@ export class DartlingGunner extends BaseTower {
   }
 
   private fireBeam(angle: number): void {
+    const isRayOfDoom = this.upgradeTiers[0] >= 4
     this.projectileManager.launch({
       x: this.x, y: this.y,
       targetX: this.x + Math.cos(angle) * 800,
@@ -94,8 +97,52 @@ export class DartlingGunner extends BaseTower {
       damage: this.effectiveDamage,
       pierce: this.effectivePierce,
       damageType: this.effectiveDamageType,
-      color: 0x00FFFF,
+      color: isRayOfDoom ? 0xFF2200 : 0x00FFFF,
     })
+  }
+
+  protected showAttackAnimation(): void {
+    super.showAttackAnimation()
+    if (this.upgradeTiers[0] >= 4) this.showRayOfDoomLaser()
+  }
+
+  private showRayOfDoomLaser(): void {
+    if (!this.laserGfx) {
+      this.laserGfx = this.scene.add.graphics()
+      this.laserGfx.setDepth(25)
+    }
+
+    const angle = this.barrelPivot.rotation
+    const startX = this.x + Math.cos(angle) * 27
+    const startY = this.y + Math.sin(angle) * 27
+    const endX   = this.x + Math.cos(angle) * 900
+    const endY   = this.y + Math.sin(angle) * 900
+
+    this.laserGfx.clear()
+    // Outer glow
+    this.laserGfx.lineStyle(8, 0xFF0000, 0.25)
+    this.laserGfx.lineBetween(startX, startY, endX, endY)
+    // Mid beam
+    this.laserGfx.lineStyle(3, 0xFF2200, 0.9)
+    this.laserGfx.lineBetween(startX, startY, endX, endY)
+    // White-hot core
+    this.laserGfx.lineStyle(1, 0xFFAAAA, 1)
+    this.laserGfx.lineBetween(startX, startY, endX, endY)
+
+    this.laserGfx.setAlpha(1)
+    this.laserTween?.stop()
+    this.laserTween = this.scene.tweens.add({
+      targets: this.laserGfx,
+      alpha: 0,
+      duration: 180,
+      ease: 'Power2Out',
+    })
+  }
+
+  destroy(fromScene?: boolean): void {
+    this.laserTween?.stop()
+    this.laserGfx?.destroy()
+    super.destroy(fromScene)
   }
 
   protected applyUpgradeEffect(effect: any, path: 0 | 1 | 2): void {

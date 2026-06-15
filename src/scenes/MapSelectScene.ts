@@ -3,6 +3,8 @@ import { GAME_WIDTH, GAME_HEIGHT, HUD_TOP_HEIGHT, HUD_BOTTOM_HEIGHT, TRACK_WIDTH
 import { MapId } from '../types'
 import { gameState } from '../game/GameState'
 import { MAP_CONFIGS, MapConfig } from '../game/Maps'
+import { HERO_CONFIGS } from '../data/heroes'
+import { SaveManager } from '../game/SaveManager'
 
 const MAP_TOP = HUD_TOP_HEIGHT
 const MAP_H = (GAME_HEIGHT - HUD_BOTTOM_HEIGHT) - MAP_TOP  // 560
@@ -66,6 +68,8 @@ export class MapSelectScene extends Phaser.Scene {
       this.createCard(MAP_CONFIGS[id], cardX, cardY)
     })
 
+    this.createHeroShopButton()
+
     this.add.text(GAME_WIDTH - 10, GAME_HEIGHT - 10, 'Phase 1 · v0.1', {
       fontSize: '11px', color: '#555555',
     }).setOrigin(1, 1)
@@ -109,6 +113,15 @@ export class MapSelectScene extends Phaser.Scene {
       fontSize: '10px', color: cfg.difficultyColor, fontStyle: 'bold',
     }).setOrigin(0.5)
 
+    // Save-slot indicator — green dot on cards that have a save
+    if (SaveManager.hasSave(cfg.id)) {
+      this.add.arc(cardX + CARD_W - 14, cardY + 14, 6, 0, 360, false, 0x44FF44, 1)
+        .setStrokeStyle(1, 0x008800)
+      this.add.text(cardX + CARD_W - 14, cardY + 14, '●', {
+        fontSize: '8px', color: '#44FF44',
+      }).setOrigin(0.5).setVisible(false)
+    }
+
     // Hover + click
     card.on('pointerover', () => {
       card.setFillStyle(0x1a2e1a).setStrokeStyle(2, diffColor)
@@ -120,8 +133,113 @@ export class MapSelectScene extends Phaser.Scene {
     })
     card.on('pointerdown', () => {
       gameState.selectedMapId = cfg.id
+      if (SaveManager.hasSave(cfg.id)) {
+        this.showContinueDialog(cfg)
+      } else {
+        this.scene.start('DifficultyScene')
+      }
+    })
+  }
+
+  private createHeroShopButton(): void {
+    const selectedHero = gameState.selectedHeroId
+      ? HERO_CONFIGS.find(h => h.id === gameState.selectedHeroId)
+      : null
+
+    const label = selectedHero ? `♛  Hero: ${selectedHero.name}` : '♛  Hero Shop'
+    const hasBg = selectedHero ? 0x1a1600 : 0x111a11
+    const hasBorder = selectedHero ? 0xFFD700 : 0x886644
+    const textColor = selectedHero ? '#FFD700' : '#CCAA66'
+
+    const btnY = GRID_START_Y + 2 * (CARD_H + GAP_Y) - GAP_Y + 30
+
+    const btn = this.add.rectangle(GAME_WIDTH / 2, btnY, 290, 42, hasBg)
+      .setStrokeStyle(2, hasBorder)
+      .setInteractive({ useHandCursor: true })
+
+    this.add.text(GAME_WIDTH / 2, btnY, label, {
+      fontSize: '15px', color: textColor, fontStyle: selectedHero ? 'bold' : 'normal',
+    }).setOrigin(0.5)
+
+    btn.on('pointerover', () => btn.setFillStyle(selectedHero ? 0x2a2400 : 0x1a2e1a))
+    btn.on('pointerout', () => btn.setFillStyle(hasBg))
+    btn.on('pointerdown', () => this.scene.start('HeroSelectScene'))
+  }
+
+  private showContinueDialog(cfg: MapConfig): void {
+    const save = SaveManager.getSave(cfg.id)!
+    const saved = new Date(save.savedAt)
+    const timeStr = saved.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+      + ' ' + saved.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+
+    const cx = GAME_WIDTH / 2
+    const cy = GAME_HEIGHT / 2
+
+    // All dialog objects live in one container — dialog.destroy() cleans everything
+    const dialog = this.add.container(0, 0).setDepth(500)
+
+    const backdrop = this.add.rectangle(cx, cy, GAME_WIDTH, GAME_HEIGHT, 0x000000, 0.7)
+      .setInteractive()
+    dialog.add(backdrop)
+
+    dialog.add(this.add.rectangle(cx, cy, 440, 230, 0x111a11).setStrokeStyle(2, 0x88cc88))
+
+    dialog.add(this.add.text(cx, cy - 78, `Continue "${cfg.name}"?`, {
+      fontSize: '20px', color: '#FFFFFF', fontStyle: 'bold',
+    }).setOrigin(0.5))
+
+    const diffLabel = save.difficulty.replace('_', ' ').toUpperCase()
+    dialog.add(this.add.text(cx, cy - 44,
+      `Round ${save.round}  ·  $${save.cash.toLocaleString()}  ·  ${save.lives} lives  ·  ${diffLabel}`, {
+      fontSize: '13px', color: '#AAAAAA',
+    }).setOrigin(0.5))
+
+    dialog.add(this.add.text(cx, cy - 20,
+      `Saved ${timeStr}  ·  ${save.towers.length} tower${save.towers.length !== 1 ? 's' : ''}`, {
+      fontSize: '12px', color: '#777777',
+    }).setOrigin(0.5))
+
+    // Continue button
+    const contBtn = this.add.rectangle(cx - 90, cy + 55, 160, 48, 0x1a5a1a)
+      .setStrokeStyle(2, 0x44cc44).setInteractive({ useHandCursor: true })
+    dialog.add(contBtn)
+    dialog.add(this.add.text(cx - 90, cy + 55, 'Continue', {
+      fontSize: '18px', color: '#44FF44', fontStyle: 'bold',
+    }).setOrigin(0.5))
+
+    contBtn.on('pointerover', () => contBtn.setFillStyle(0x2a8a2a))
+    contBtn.on('pointerout', () => contBtn.setFillStyle(0x1a5a1a))
+    contBtn.on('pointerdown', () => {
+      SaveManager.pendingLoad = save
+      gameState.init(save.difficulty)
+      gameState.selectedMapId = save.mapId
+      gameState.round = save.round
+      gameState.lives = save.lives
+      gameState.maxLives = save.maxLives
+      gameState.cash = save.cash
+      gameState.isFreePlay = save.isFreePlay
+      gameState.selectedHeroId = save.heroId
+      gameState.heroPlacedOnMap = save.heroPlacedOnMap
+      this.scene.start('GameScene')
+    })
+
+    // New Game button
+    const newBtn = this.add.rectangle(cx + 90, cy + 55, 160, 48, 0x3a1a1a)
+      .setStrokeStyle(2, 0xcc4444).setInteractive({ useHandCursor: true })
+    dialog.add(newBtn)
+    dialog.add(this.add.text(cx + 90, cy + 55, 'New Game', {
+      fontSize: '18px', color: '#FF6666', fontStyle: 'bold',
+    }).setOrigin(0.5))
+
+    newBtn.on('pointerover', () => newBtn.setFillStyle(0x5a2a2a))
+    newBtn.on('pointerout', () => newBtn.setFillStyle(0x3a1a1a))
+    newBtn.on('pointerdown', () => {
+      SaveManager.deleteSave(cfg.id)
+      dialog.destroy()
       this.scene.start('DifficultyScene')
     })
+
+    backdrop.on('pointerdown', () => dialog.destroy())
   }
 
   private drawMiniPreview(gfx: Phaser.GameObjects.Graphics, cfg: MapConfig, px: number, py: number): void {

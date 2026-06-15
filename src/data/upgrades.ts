@@ -239,8 +239,8 @@ export const BUCCANEER_PATH3: UpgradePath = [
   { name: 'Long Range', cost: 100, description: '+range', effect: { rangeMultiplier: 1.15 } },
   { name: "Crow's Nest", cost: 500, description: 'Detects Camo bloons', effect: { addCamoDetection: true } },
   { name: 'Merchantman', cost: 1800, description: 'Earns $200 extra cash per round', effect: { specialBehavior: 'merchantman' } },
-  { name: 'Favored Trades', cost: 7500, description: 'Earns $500 extra cash per round, +pierce', effect: { specialBehavior: 'favored_trades', pierceBonus: 3 } },
-  { name: 'Trade Empire', cost: 20000, description: 'Boosts all Merchantmen income, massive bonuses', effect: { specialBehavior: 'trade_empire', pierceBonus: 5, damageBonus: 2 } },
+  { name: 'Favored Trades', cost: 7500, description: 'Earns $1000 extra cash per round, +pierce', effect: { specialBehavior: 'favored_trades', pierceBonus: 3 } },
+  { name: 'Trade Empire', cost: 20000, description: 'Earns $2500 cash per round, massive bonuses', effect: { specialBehavior: 'trade_empire', pierceBonus: 5, damageBonus: 2 } },
 ]
 
 // ============================================================
@@ -527,9 +527,9 @@ export const SPIKE_PATH1: UpgradePath = [
 export const SPIKE_PATH2: UpgradePath = [
   { name: 'Faster Production', cost: 200, description: 'Produces spike piles twice as fast', effect: { cooldownMultiplier: 0.5 } },
   { name: 'Even Faster Production', cost: 400, description: 'Doubles production speed again', effect: { cooldownMultiplier: 0.5 } },
-  { name: 'MOAB SHREDR Spikes', cost: 1000, description: 'Spikes deal 5× damage to MOAB-class', effect: { specialBehavior: 'moab_shredr', damageBonus: 2 } },
-  { name: 'Viral Frost', cost: 3000, description: 'Spikes freeze bloons that touch them', effect: { specialBehavior: 'viral_frost_spike', newDamageType: DamageType.Cold } },
-  { name: 'The Tack Zone', cost: 40000, description: 'Extremely rapid spike production, massive coverage', effect: { specialBehavior: 'the_tack_zone', cooldownMultiplier: 0.2, pierceBonus: 20 } },
+  { name: 'Carpet of Spikes', cost: 7000, description: 'Places spikes anywhere on the track and produces much faster', effect: { specialBehavior: 'carpet_of_spikes', cooldownMultiplier: 0.4 } },
+  { name: 'Viral Frost', cost: 9000, description: 'Spikes freeze bloons that touch them', effect: { specialBehavior: 'viral_frost_spike', newDamageType: DamageType.Cold } },
+  { name: 'The Tack Zone', cost: 46000, description: 'Extremely rapid spike production, massive coverage', effect: { specialBehavior: 'the_tack_zone', cooldownMultiplier: 0.2, pierceBonus: 20 } },
 ]
 
 export const SPIKE_PATH3: UpgradePath = [

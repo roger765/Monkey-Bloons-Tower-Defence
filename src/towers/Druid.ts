@@ -112,4 +112,93 @@ export class Druid extends BaseTower {
     super.applyUpgradeEffect(effect, path)
     if (effect.extraProjectiles) this.thornCount += effect.extraProjectiles
   }
+
+  protected updateVisuals(): void {
+    const t1 = this.upgradeTiers[0]
+    const t2 = this.upgradeTiers[1]
+    const t3 = this.upgradeTiers[2]
+
+    let stump: number, bark: number, ring: number, leaf: number, leafl: number, leafd: number, moss: number, barrelCol: number
+
+    if (t1 >= 3) {
+      // Heart of Thunder / Avatar of Wrath — charged, crackling yellow-white
+      stump = 0x8A7040; bark = 0x504018; ring = 0xB09050; leaf = 0xCCDD44; leafl = 0xEEFF88; leafd = 0x6A8800; moss = 0xAABB22; barrelCol = 0x404018
+    } else if (t1 >= 1) {
+      // Hard Thorns / Thorn Swarm — slightly darker bark
+      stump = 0x5A3018; bark = 0x3A1A08; ring = 0x7A5030; leaf = 0x228B22; leafl = 0x44CC44; leafd = 0x145014; moss = 0x2E7D32; barrelCol = 0x3A1A08
+    } else if (t2 >= 3) {
+      // Ball Lightning / Poplust — electric blue-purple energy
+      stump = 0x3A2060; bark = 0x1A0A30; ring = 0x6050A0; leaf = 0x4466EE; leafl = 0x88AAFF; leafd = 0x2030A0; moss = 0x3050CC; barrelCol = 0x1A1040
+    } else if (t2 >= 1) {
+      // Druid of Jungle/Swamp/Storm — mossy swamp green
+      stump = 0x3A3010; bark = 0x1A1808; ring = 0x504820; leaf = 0x2A6820; leafl = 0x55AA30; leafd = 0x104808; moss = 0x206018; barrelCol = 0x1A2A08
+    } else if (t3 >= 2) {
+      // Spirit of Forest / Jungle Bounty — lush deep emerald
+      stump = 0x5A3A1A; bark = 0x301A08; ring = 0x7A5838; leaf = 0x0A6A20; leafl = 0x22AA48; leafd = 0x043A10; moss = 0x0A5018; barrelCol = 0x2A1008
+    } else if (t3 >= 1) {
+      // Thorn Wall — slightly richer green
+      stump = 0x623A20; bark = 0x381A08; ring = 0x826040; leaf = 0x1A7820; leafl = 0x3ABB40; leafd = 0x0A4810; moss = 0x185A20; barrelCol = 0x281008
+    } else {
+      stump = 0x6B3A1E; bark = 0x4A2010; ring = 0x8B5030; leaf = 0x228B22; leafl = 0x44CC44; leafd = 0x145014; moss = 0x2E7D32; barrelCol = bark
+    }
+
+    const g = this.customGfx
+    g.clear()
+
+    g.fillStyle(stump)
+    g.fillEllipse(0, 10, 32, 12)
+    g.lineStyle(2, bark)
+    g.strokeEllipse(0, 10, 32, 12)
+
+    g.fillStyle(stump)
+    g.fillRect(-14, -2, 28, 14)
+
+    g.lineStyle(1.5, bark)
+    g.lineBetween(-10, -2, -10, 12)
+    g.lineBetween(-4, -2, -4, 12)
+    g.lineBetween(2, -2, 2, 12)
+    g.lineBetween(8, -2, 8, 12)
+
+    g.fillStyle(ring)
+    g.fillEllipse(0, -2, 28, 10)
+    g.lineStyle(1, bark)
+    g.strokeEllipse(0, -2, 28, 10)
+    g.lineStyle(1, bark, 0.6)
+    g.strokeEllipse(0, -2, 20, 7)
+    g.strokeEllipse(0, -2, 12, 4)
+    g.fillStyle(this.darkenHex(ring, 0.1))
+    g.fillEllipse(0, -2, 5, 3)
+
+    g.fillStyle(moss, 0.7)
+    g.fillCircle(-12, 6, 4)
+    g.fillCircle(10, 8, 3)
+    g.fillCircle(-6, 12, 3)
+
+    g.fillStyle(leafd)
+    g.fillCircle(-7, -14, 9)
+    g.fillCircle(7, -14, 9)
+    g.fillCircle(0, -11, 9)
+
+    g.fillStyle(leaf)
+    g.fillCircle(-8, -16, 8)
+    g.fillCircle(8, -16, 8)
+    g.fillCircle(0, -20, 8)
+    g.fillCircle(-3, -13, 7)
+    g.fillCircle(3, -13, 7)
+
+    g.fillStyle(leafl, 0.5)
+    g.fillCircle(-6, -18, 4)
+    g.fillCircle(7, -19, 3)
+
+    // Lightning glow for thunder path
+    if (t1 >= 3) {
+      g.lineStyle(2, 0xFFFF44, 0.5)
+      g.strokeCircle(0, -16, 14)
+    }
+
+    this.barrel.setFillStyle(barrelCol)
+    this.barrel.setStrokeStyle(1.5, leafd)
+    this.barrel.setSize(18, 5)
+    this.barrel.setPosition(12, 0)
+  }
 }

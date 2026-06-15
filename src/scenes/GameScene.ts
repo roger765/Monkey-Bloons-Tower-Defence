@@ -12,6 +12,8 @@ import { TowerShop } from '../ui/TowerShop'
 import { TowerPanel } from '../ui/TowerPanel'
 import { FreePlaySpawner } from '../ui/FreePlaySpawner'
 import { TowerConfig } from '../types'
+import { TOWER_CONFIGS } from '../data/towers'
+import { SaveManager } from '../game/SaveManager'
 
 export class GameScene extends Phaser.Scene {
   private track!: Track
@@ -31,6 +33,21 @@ export class GameScene extends Phaser.Scene {
     super({ key: 'GameScene' })
   }
 
+  preload(): void {
+    for (const cfg of TOWER_CONFIGS) {
+      if (cfg.image) this.load.image(cfg.id, cfg.image)
+
+      // Tier 5 upgrade portraits — one per path
+      const wikiName = cfg.id.split('_').map(w => w[0].toUpperCase() + w.slice(1)).join('')
+      for (const prefix of ['500', '050', '005'] as const) {
+        this.load.image(
+          `${cfg.id}_${prefix}`,
+          `/assets/towers/webp-ready/${prefix}-${wikiName}.webp`
+        )
+      }
+    }
+  }
+
   create(): void {
     // Map graphics
     this.mapGraphics = this.add.graphics()
@@ -38,7 +55,7 @@ export class GameScene extends Phaser.Scene {
 
     // Track
     const mapCfg = MAP_CONFIGS[gameState.selectedMapId]
-    this.track = new Track(this, mapCfg.waypoints, {
+    this.track = new Track(this, mapCfg.waypoints, mapCfg.ponds, {
       grass: mapCfg.grassColor,
       track: mapCfg.trackColor,
       border: mapCfg.borderColor,
@@ -77,6 +94,8 @@ export class GameScene extends Phaser.Scene {
       if (tower === null) this.shop.clearSelection()
     })
 
+    this.towerPanel.onSaveNeeded(() => this.saveGame())
+
     // Round end callback
     this.roundSystem.onRoundEnd((round) => {
       this.towerManager.notifyRoundEnd()
@@ -84,6 +103,7 @@ export class GameScene extends Phaser.Scene {
       if (gameState.isFreePlay && round === gameState.endRound) {
         this.hud.showFreePlayBanner()
       }
+      this.saveGame()
     })
 
     // Free Play bloon spawner panel
@@ -91,6 +111,12 @@ export class GameScene extends Phaser.Scene {
       this.freePlaySpawner = new FreePlaySpawner(this, (type, count, camo, regrow, fortified) => {
         this.roundSystem.injectSpawns(type, count, camo, regrow, fortified)
       })
+    }
+
+    // Restore towers from a saved game if one was pending
+    if (SaveManager.pendingLoad) {
+      this.towerManager.loadSavedTowers(SaveManager.pendingLoad.towers)
+      SaveManager.pendingLoad = null
     }
 
     // Input
@@ -116,7 +142,10 @@ export class GameScene extends Phaser.Scene {
 
       if (gameState.placingTowerId) {
         const placed = this.towerManager.placeTower(gameState.placingTowerId, pointer.x, pointer.y)
-        if (placed) this.towerManager.selectTower(placed)
+        if (placed) {
+          this.towerManager.selectTower(placed)
+          this.saveGame()
+        }
       } else {
         // 40×40 hit area → half-diagonal ≈ 28; use that as deselect guard radius
         const hitTower = this.towerManager.getTowers().some(t => {
@@ -208,7 +237,35 @@ export class GameScene extends Phaser.Scene {
     })
   }
 
+  private saveGame(): void {
+    if (gameState.isFreePlay) return
+    const towers = this.towerManager.getTowers().map(t => ({
+      configId: t.config.id,
+      x: t.x,
+      y: t.y,
+      upgradeTiers: [...t.upgradeTiers] as [number, number, number],
+      targeting: t.targeting,
+      totalSpent: t.totalSpent,
+      isParagon: t.isParagon,
+    }))
+    SaveManager.writeSave({
+      version: 1,
+      mapId: gameState.selectedMapId,
+      difficulty: gameState.difficulty,
+      round: gameState.round,
+      lives: gameState.lives,
+      maxLives: gameState.maxLives,
+      cash: gameState.cash,
+      isFreePlay: gameState.isFreePlay,
+      heroId: gameState.selectedHeroId,
+      heroPlacedOnMap: gameState.heroPlacedOnMap,
+      towers,
+      savedAt: Date.now(),
+    })
+  }
+
   private exitToMenu(): void {
+    this.saveGame()
     gameState.init(gameState.difficulty)
     this.scene.start('MainMenuScene')
   }
@@ -239,6 +296,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     if (gameState.isVictory && !this.scene.isActive('GameOverScene')) {
+      SaveManager.deleteSave(gameState.selectedMapId)
       this.scene.launch('GameOverScene', { isVictory: true })
       this.scene.pause('GameScene')
     }

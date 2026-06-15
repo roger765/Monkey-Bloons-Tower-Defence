@@ -34,6 +34,7 @@ export class SpikeFactory extends BaseTower {
   private spikePiles: SpikePile[] = []
   private dropIndex: number = 0
   private cachedTrackPoints: Phaser.Math.Vector2[] = []
+  private carpetMode: boolean = false
   private leftRoofPivot: Phaser.GameObjects.Container
   private rightRoofPivot: Phaser.GameObjects.Container
   private roofAnimating: boolean = false
@@ -166,15 +167,16 @@ export class SpikeFactory extends BaseTower {
     }
   }
 
-  // Returns track points in range, cached on first call (tower never moves after placement)
+  // Returns track points in range, cached on first call (tower never moves after placement).
+  // In carpet mode the range check is skipped — every point on the full track is valid.
   private getTrackPointsInRange(): Phaser.Math.Vector2[] {
     if (this.cachedTrackPoints.length > 0) return this.cachedTrackPoints
 
     for (let d = 0; d <= this.track.totalLength; d += TRACK_SAMPLE_STEP) {
       const pos = this.track.getPositionAt(d)
-      if (Phaser.Math.Distance.Between(this.x, this.y, pos.x, pos.y) <= this.effectiveRange) {
-        this.cachedTrackPoints.push(pos)
-      }
+      const inRange = this.carpetMode ||
+        Phaser.Math.Distance.Between(this.x, this.y, pos.x, pos.y) <= this.effectiveRange
+      if (inRange) this.cachedTrackPoints.push(pos)
     }
     return this.cachedTrackPoints
   }
@@ -314,5 +316,92 @@ export class SpikeFactory extends BaseTower {
 
   protected applyUpgradeEffect(effect: any, path: 0 | 1 | 2): void {
     super.applyUpgradeEffect(effect, path)
+    if (effect.specialBehavior === 'carpet_of_spikes') {
+      this.carpetMode = true
+      this.cachedTrackPoints = []  // invalidate so next tick rebuilds with full track
+    }
+  }
+
+  protected updateVisuals(): void {
+    const t1 = this.upgradeTiers[0]
+    const t2 = this.upgradeTiers[1]
+    const t3 = this.upgradeTiers[2]
+
+    let wall: number, brick: number, winCol: number, chimney: number, roofC: number, dark: number, metal: number
+
+    if (t1 >= 3) {
+      // Spiked Mines / Balls / Super Mines — dark rust-orange industrial
+      wall = 0x8A3A1A; brick = 0x5A1A08; winCol = 0xFF8844; chimney = 0x481008; roofC = 0x300808; dark = 0x100000; metal = 0xAA4422
+    } else if (t1 >= 1) {
+      // White Hot / Bigger Stacks — slightly warmer
+      wall = 0x8A4A2A; brick = 0x5A2A10; winCol = 0xFFCC88; chimney = 0x4A2010; roofC = 0x3A1808; dark = 0x1A0A00; metal = 0x9A8844
+    } else if (t2 >= 3) {
+      // Carpet / Viral Frost / Tack Zone — icy blue-white
+      wall = 0x4A6888; brick = 0x2A3858; winCol = 0xAADDFF; chimney = 0x2A3858; roofC = 0x1A2840; dark = 0x080C18; metal = 0x88AACC
+    } else if (t2 >= 1) {
+      // Faster Production — slightly blue-grey industrial
+      wall = 0x5A6878; brick = 0x303848; winCol = 0xCCDDEE; chimney = 0x303848; roofC = 0x202838; dark = 0x0A0C10; metal = 0x8898AA
+    } else if (t3 >= 3) {
+      // Deadly / Perma-Spike — deep dark iron
+      wall = 0x3A3A3A; brick = 0x1A1A1A; winCol = 0xFFDD88; chimney = 0x202020; roofC = 0x141414; dark = 0x040404; metal = 0x808080
+    } else if (t3 >= 1) {
+      // Long Reach / Endless — slightly lighter
+      wall = 0x8A4A22; brick = 0x5A2A10; winCol = 0xFFCC88; chimney = 0x4A2010; roofC = 0x3A1808; dark = 0x1A0A00; metal = 0x9A9044
+    } else {
+      wall = 0x7A3E1E; brick = 0x5C2E10; winCol = 0xFFDD88; chimney = 0x4A2010; roofC = 0x3A1808; dark = 0x1A0A00; metal = 0x888844
+    }
+
+    const g = this.customGfx
+    g.clear()
+
+    g.fillStyle(chimney)
+    g.fillRect(-13, -22, 5, 14)
+    g.fillStyle(dark)
+    g.fillRect(-14, -24, 7, 3)
+
+    g.fillStyle(chimney)
+    g.fillRect(8, -22, 5, 14)
+    g.fillStyle(dark)
+    g.fillRect(7, -24, 7, 3)
+
+    g.fillStyle(wall)
+    g.fillRect(-16, -10, 32, 26)
+
+    g.fillStyle(brick)
+    for (let row = -6; row <= 14; row += 5) {
+      g.fillRect(-16, row, 32, 1)
+    }
+
+    g.fillStyle(winCol)
+    g.fillRect(-12, -6, 7, 6)
+    g.fillRect(5, -6, 7, 6)
+    g.lineStyle(1, brick)
+    g.strokeRect(-12, -6, 7, 6)
+    g.strokeRect(5, -6, 7, 6)
+    g.lineBetween(-8.5, -6, -8.5, 0)
+    g.lineBetween(-12, -3, -5, -3)
+    g.lineBetween(8.5, -6, 8.5, 0)
+    g.lineBetween(5, -3, 12, -3)
+
+    g.fillStyle(dark)
+    g.fillRoundedRect(-4, 5, 8, 11, 2)
+
+    g.fillStyle(chimney)
+    g.fillRect(-16, -12, 32, 4)
+
+    g.fillStyle(dark)
+    g.fillRect(-4, -12, 8, 4)
+
+    g.fillStyle(metal)
+    g.fillRect(-3, -9, 6, 1)
+
+    // Recolour animated roof panels (we can't easily access them, just tint the wall band)
+    if (t1 >= 3) {
+      g.lineStyle(2, 0xFF4400, 0.5)
+      g.strokeRect(-16, -12, 32, 4)
+    } else if (t2 >= 3) {
+      g.lineStyle(2, 0x44AAFF, 0.5)
+      g.strokeRect(-16, -12, 32, 4)
+    }
   }
 }

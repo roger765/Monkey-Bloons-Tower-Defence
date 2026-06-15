@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import { GAME_WIDTH, GAME_HEIGHT } from './constants'
 import { MainMenuScene } from './scenes/MainMenuScene'
 import { MapSelectScene } from './scenes/MapSelectScene'
+import { HeroSelectScene } from './scenes/HeroSelectScene'
 import { DifficultyScene } from './scenes/DifficultyScene'
 import { GameScene } from './scenes/GameScene'
 import { GameOverScene } from './scenes/GameOverScene'
@@ -12,7 +13,7 @@ const config: Phaser.Types.Core.GameConfig = {
   height: GAME_HEIGHT,
   backgroundColor: '#1a1a2e',
   parent: document.body,
-  scene: [MainMenuScene, MapSelectScene, DifficultyScene, GameScene, GameOverScene],
+  scene: [MainMenuScene, MapSelectScene, HeroSelectScene, DifficultyScene, GameScene, GameOverScene],
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,

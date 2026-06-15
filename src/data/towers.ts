@@ -40,6 +40,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x8B6914,
     description: 'Throws a single dart',
     upgrades: [DART_PATH1, DART_PATH2, DART_PATH3],
+    image: '/assets/towers/webp-ready/000-DartMonkey.webp',
   },
   {
     id: 'boomerang_monkey',
@@ -55,6 +56,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x5A3E28,
     description: 'Throws a boomerang that curves and returns',
     upgrades: [BOOM_PATH1, BOOM_PATH2, BOOM_PATH3],
+    image: '/assets/towers/webp-ready/000-BoomerangMonkey.webp',
   },
   {
     id: 'bomb_shooter',
@@ -70,6 +72,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x404040,
     description: 'Lobs explosive bombs with area-of-effect blast',
     upgrades: [BOMB_PATH1, BOMB_PATH2, BOMB_PATH3],
+    image: '/assets/towers/webp-ready/000-BombShooter.webp',
   },
   {
     id: 'tack_shooter',
@@ -85,6 +88,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x808080,
     description: 'Fires 8 tacks in all directions',
     upgrades: [TACK_PATH1, TACK_PATH2, TACK_PATH3],
+    image: '/assets/towers/webp-ready/000-TackShooter.webp',
   },
   {
     id: 'ice_monkey',
@@ -100,6 +104,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x80D0FF,
     description: 'Freezes all bloons in radius',
     upgrades: [ICE_PATH1, ICE_PATH2, ICE_PATH3],
+    image: '/assets/towers/webp-ready/000-IceMonkey.webp',
   },
   {
     id: 'glue_gunner',
@@ -115,6 +120,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x80C040,
     description: 'Fires glue blobs that slow bloons by 50%',
     upgrades: [GLUE_PATH1, GLUE_PATH2, GLUE_PATH3],
+    image: '/assets/towers/webp-ready/000-GlueGunner.webp',
   },
 
   // ── Military ──────────────────────────────────────────────
@@ -132,6 +138,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x6B8E23,
     description: 'Long-range precision shots from anywhere on the map',
     upgrades: [SNIPER_PATH1, SNIPER_PATH2, SNIPER_PATH3],
+    image: '/assets/towers/webp-ready/000-SniperMonkey.webp',
   },
   {
     id: 'monkey_sub',
@@ -147,6 +154,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x4169E1,
     description: 'Fast underwater attacks with homing darts',
     upgrades: [SUB_PATH1, SUB_PATH2, SUB_PATH3],
+    image: '/assets/towers/webp-ready/000-MonkeySub.webp',
   },
   {
     id: 'monkey_buccaneer',
@@ -162,6 +170,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x8B4513,
     description: 'Ship-mounted cannon fires darts and grapes',
     upgrades: [BUCCANEER_PATH1, BUCCANEER_PATH2, BUCCANEER_PATH3],
+    image: '/assets/towers/webp-ready/000-MonkeyBuccaneer.webp',
   },
   {
     id: 'monkey_ace',
@@ -177,6 +186,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0xC0C0C0,
     description: 'Airplane that circles the track firing darts',
     upgrades: [ACE_PATH1, ACE_PATH2, ACE_PATH3],
+    image: '/assets/towers/webp-ready/000-MonkeyAce.webp',
   },
   {
     id: 'heli_pilot',
@@ -192,6 +202,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x708090,
     description: 'Helicopter that pursues bloons and fires rapidly',
     upgrades: [HELI_PATH1, HELI_PATH2, HELI_PATH3],
+    image: '/assets/towers/webp-ready/000-HeliPilot.webp',
   },
   {
     id: 'mortar_monkey',
@@ -207,6 +218,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x556B2F,
     description: 'Lobs explosive shells at any point on the map',
     upgrades: [MORTAR_PATH1, MORTAR_PATH2, MORTAR_PATH3],
+    image: '/assets/towers/webp-ready/000-MortarMonkey.webp',
   },
   {
     id: 'dartling_gunner',
@@ -222,6 +234,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x4A4A4A,
     description: 'Rapid-fire energy darts that track targets',
     upgrades: [DARTLING_PATH1, DARTLING_PATH2, DARTLING_PATH3],
+    image: '/assets/towers/webp-ready/000-DartlingGunner.webp',
   },
 
   // ── Magic ─────────────────────────────────────────────────
@@ -239,6 +252,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x9370DB,
     description: 'Casts magical bolts and fireballs at bloons',
     upgrades: [WIZARD_PATH1, WIZARD_PATH2, WIZARD_PATH3],
+    image: '/assets/towers/webp-ready/000-WizardMonkey.webp',
   },
   {
     id: 'super_monkey',
@@ -254,6 +268,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0xFFD700,
     description: 'Fires super-fast energy blasts at bloons',
     upgrades: [SUPER_PATH1, SUPER_PATH2, SUPER_PATH3],
+    image: '/assets/towers/webp-ready/000-SuperMonkey.webp',
   },
   {
     id: 'ninja_monkey',
@@ -269,6 +284,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x2F4F4F,
     description: 'Throws shurikens at bloons — detects Camo',
     upgrades: [NINJA_PATH1, NINJA_PATH2, NINJA_PATH3],
+    image: '/assets/towers/webp-ready/000-NinjaMonkey.webp',
   },
   {
     id: 'alchemist',
@@ -284,6 +300,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0xFF6347,
     description: 'Throws acid potions and buffs nearby towers',
     upgrades: [ALCHEMIST_PATH1, ALCHEMIST_PATH2, ALCHEMIST_PATH3],
+    image: '/assets/towers/webp-ready/000-Alchemist.webp',
   },
   {
     id: 'druid',
@@ -299,6 +316,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x228B22,
     description: 'Hurls thorns and summons lightning storms',
     upgrades: [DRUID_PATH1, DRUID_PATH2, DRUID_PATH3],
+    image: '/assets/towers/webp-ready/000-Druid.webp',
   },
 
   // ── Support ───────────────────────────────────────────────
@@ -316,13 +334,14 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0xFFFF00,
     description: 'Generates cash every round — does not attack',
     upgrades: [FARM_PATH1, FARM_PATH2, FARM_PATH3],
+    image: '/assets/towers/webp-ready/000-BananaFarm.webp',
   },
   {
     id: 'spike_factory',
     name: 'Spike Factory',
     cost: 1000,
     range: 80,
-    cooldown: 1.5,
+    cooldown: 2.0,
     damage: 1,
     pierce: 1,
     damageType: DamageType.Sharp,
@@ -331,6 +350,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0xA0522D,
     description: 'Places spike piles on the track that pop bloons',
     upgrades: [SPIKE_PATH1, SPIKE_PATH2, SPIKE_PATH3],
+    image: '/assets/towers/webp-ready/000-SpikeFactory.webp',
   },
   {
     id: 'monkey_village',
@@ -346,6 +366,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0xDEB887,
     description: 'Buffs nearby towers — does not attack',
     upgrades: [VILLAGE_PATH1, VILLAGE_PATH2, VILLAGE_PATH3],
+    image: '/assets/towers/webp-ready/000-MonkeyVillage.webp',
   },
   {
     id: 'engineer_monkey',
@@ -361,6 +382,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0xCD853F,
     description: 'Nailgun attacks and deploys auto-targeting sentries',
     upgrades: [ENGINEER_PATH1, ENGINEER_PATH2, ENGINEER_PATH3],
+    image: '/assets/towers/webp-ready/000-EngineerMonkey.webp',
   },
   {
     id: 'beast_handler',
@@ -376,6 +398,7 @@ export const TOWER_CONFIGS: TowerConfig[] = [
     color: 0x8FBC8F,
     description: 'Controls beasts that maul bloons on the track',
     upgrades: [BEAST_PATH1, BEAST_PATH2, BEAST_PATH3],
+    image: '/assets/towers/webp-ready/000-BeastHandler.webp',
   },
 ]
 

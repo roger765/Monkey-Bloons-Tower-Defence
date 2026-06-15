@@ -30,10 +30,22 @@ export class HUD {
     bg.setStrokeStyle(1, 0x334466)
     this.container.add(bg)
 
-    // Round text
+    // Round text — click to jump to a specific round (between rounds only)
     this.roundText = scene.add.text(20, HUD_TOP_HEIGHT / 2, 'Round 0/40', {
       fontSize: '16px', color: '#FFFFFF', fontStyle: 'bold'
-    }).setOrigin(0, 0.5)
+    }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true })
+    this.roundText.on('pointerover', () => { if (!gameState.isWaveActive) this.roundText.setColor('#AADDFF') })
+    this.roundText.on('pointerout', () => this.roundText.setColor(gameState.isFreePlay ? '#FF88FF' : '#FFFFFF'))
+    this.roundText.on('pointerdown', () => {
+      if (gameState.isWaveActive) return
+      const max = gameState.isFreePlay ? 999 : gameState.endRound
+      const input = window.prompt(`Jump to round (1–${max}):`, String(gameState.round + 1))
+      if (input === null) return
+      const value = parseInt(input, 10)
+      if (!isNaN(value) && value >= 1 && value <= max) {
+        gameState.round = value - 1
+      }
+    })
     this.container.add(this.roundText)
 
     // Lives text

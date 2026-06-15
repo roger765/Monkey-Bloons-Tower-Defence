@@ -14,6 +14,7 @@ export interface ProjectileConfig {
   pierce: number
   damageType: DamageType
   color: number
+  shape?: 'circle' | 'dart' | 'boomerang' | 'tack' | 'bomb' | 'bullet'
   isAoE?: boolean
   aoERadius?: number
   isStraightLine?: boolean
@@ -63,8 +64,13 @@ export class Projectile extends Phaser.GameObjects.Arc {
   active: boolean = false
   collisionRadius: number = 5
 
+  private shapeGfx: Phaser.GameObjects.Graphics
+  private currentShape: string = 'circle'
+
   constructor(scene: Phaser.Scene) {
     super(scene, 0, 0, 5, 0, 360, false, 0xFFFFFF)
+    this.shapeGfx = scene.add.graphics()
+    this.shapeGfx.setActive(false).setVisible(false)
     this.setActive(false)
     this.setVisible(false)
     scene.add.existing(this)
@@ -108,9 +114,93 @@ export class Projectile extends Phaser.GameObjects.Arc {
       this.velocityY = 0
     }
 
+    // Shape rendering: hide the Arc and draw a custom shape if requested
+    this.currentShape = cfg.shape ?? 'circle'
+    if (this.currentShape !== 'circle') {
+      this.setAlpha(0)
+      this.shapeGfx.clear()
+      this.drawShape(this.currentShape, cfg.color)
+      this.shapeGfx.setPosition(cfg.x, cfg.y)
+      this.shapeGfx.setRotation(0)
+      this.shapeGfx.setActive(true).setVisible(true).setDepth(20)
+    } else {
+      this.setAlpha(1)
+      this.shapeGfx.setActive(false).setVisible(false)
+    }
+
     this.setActive(true)
     this.setVisible(true)
     this.setDepth(20)
+  }
+
+  private drawShape(shape: string, color: number): void {
+    const g = this.shapeGfx
+    g.clear()
+    switch (shape) {
+      case 'dart':
+        // Shaft (golden rod)
+        g.fillStyle(0xCC9900, 1)
+        g.fillRect(-5, -1.5, 9, 3)
+        // Pointed tip (brighter yellow)
+        g.fillStyle(0xEEEE22, 1)
+        g.fillTriangle(9, 0, 2, -2.5, 2, 2.5)
+        // Orange tail fins
+        g.fillStyle(0xFF8800, 1)
+        g.fillTriangle(-5, -1.5, -9, -4, -6, 0)
+        g.fillTriangle(-5,  1.5, -9,  4, -6, 0)
+        break
+
+      case 'boomerang':
+        // Outer arc — thick wooden crescent
+        g.lineStyle(5, 0xC87820, 1)
+        g.beginPath()
+        g.arc(0, 2, 8, Phaser.Math.DegToRad(205), Phaser.Math.DegToRad(335))
+        g.strokePath()
+        // Inner highlight
+        g.lineStyle(2, 0xDDAA40, 1)
+        g.beginPath()
+        g.arc(0, 2, 5, Phaser.Math.DegToRad(210), Phaser.Math.DegToRad(330))
+        g.strokePath()
+        break
+
+      case 'tack':
+        // Four sharp points radiating outward
+        g.fillStyle(0xCCCCCC, 1)
+        for (let i = 0; i < 4; i++) {
+          const a = (i / 4) * Math.PI * 2
+          const tx = Math.cos(a) * 6,  ty = Math.sin(a) * 6
+          const lx = Math.cos(a - 0.45) * 2.5, ly = Math.sin(a - 0.45) * 2.5
+          const rx = Math.cos(a + 0.45) * 2.5, ry = Math.sin(a + 0.45) * 2.5
+          g.fillTriangle(tx, ty, lx, ly, rx, ry)
+        }
+        g.fillStyle(0x888888, 1)
+        g.fillCircle(0, 0, 2)
+        break
+
+      case 'bomb':
+        // Dark cannonball with glint and fuse
+        g.fillStyle(0x1A1A1A, 1)
+        g.fillCircle(0, 1, 6)
+        g.fillStyle(0x505050, 1)
+        g.fillCircle(-2, -1, 2.5)
+        g.lineStyle(1.5, 0xAA8800, 1)
+        g.lineBetween(0, -5, 2, -9)
+        g.fillStyle(0xFFDD00, 1)
+        g.fillCircle(2, -9, 2)
+        g.fillStyle(0xFF6600, 1)
+        g.fillCircle(2, -9, 1)
+        break
+
+      case 'bullet':
+        // Brass casing + lead tip
+        g.fillStyle(0xAA7700, 1)
+        g.fillRect(-6, -2, 3, 4)      // base
+        g.fillStyle(0xCCAA00, 1)
+        g.fillRect(-3, -2, 7, 4)      // brass body
+        g.fillStyle(0xDDDDAA, 1)
+        g.fillTriangle(7, 0, 3, -2, 3, 2)  // lead tip
+        break
+    }
   }
 
   update(delta: number, bloons: Bloon[], time: number): void {
@@ -123,6 +213,21 @@ export class Projectile extends Phaser.GameObjects.Arc {
     } else {
       this.x += this.velocityX * dt
       this.y += this.velocityY * dt
+    }
+
+    // Sync shape graphic position and orientation
+    if (this.shapeGfx.active) {
+      this.shapeGfx.setPosition(this.x, this.y)
+      if (this.currentShape === 'dart' || this.currentShape === 'bullet') {
+        // Face direction of travel
+        this.shapeGfx.setRotation(Math.atan2(this.velocityY, this.velocityX))
+      } else if (this.currentShape === 'boomerang') {
+        // Spin continuously
+        this.shapeGfx.setRotation(this.shapeGfx.rotation + 6 * dt)
+      } else if (this.currentShape === 'tack') {
+        // Slow spin
+        this.shapeGfx.setRotation(this.shapeGfx.rotation + 4 * dt)
+      }
     }
 
     // Check bloon collisions
@@ -155,8 +260,7 @@ export class Projectile extends Phaser.GameObjects.Arc {
       applyGlue(bloon, this.glueDuration, this.glueSlowMult, this.canGlueMoab)
     } else {
       if (!canHit(this.damageType, bloon)) {
-        // Projectile passes through immune/frozen bloons without consuming pierce,
-        // but we mark it so we don't retry every frame while still overlapping.
+        // Projectile passes through immune bloons without consuming pierce
         this.hitBloons.add(bloon)
         return
       }
@@ -196,7 +300,10 @@ export class Projectile extends Phaser.GameObjects.Arc {
   deactivate(): void {
     this.setActive(false)
     this.setVisible(false)
+    this.setAlpha(1)  // reset for pool reuse
     this.pierce = 0
+    this.shapeGfx.setActive(false).setVisible(false)
+    this.shapeGfx.clear()
   }
 
 }

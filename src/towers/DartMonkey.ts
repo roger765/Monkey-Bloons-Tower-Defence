@@ -73,6 +73,7 @@ export class DartMonkey extends BaseTower {
       pierce: this.effectivePierce,
       damageType: this.effectiveDamageType,
       color: 0xCCCC00,
+      shape: 'dart',
     })
   }
 

@@ -97,6 +97,8 @@ export interface TowerConfig {
   color: number
   description: string
   upgrades: [UpgradePath, UpgradePath, UpgradePath]
+  image?: string
+  isHero?: boolean
 }
 
 export interface RoundGroup {

@@ -14,6 +14,7 @@ export class TowerPanel {
   private container: Phaser.GameObjects.Container
   private towerManager: TowerManager
   private currentTower: BaseTower | null = null
+  private saveCallback: (() => void) | null = null
   private nameText: Phaser.GameObjects.Text
   private notationText: Phaser.GameObjects.Text
   private sellBtn: Phaser.GameObjects.Text
@@ -73,6 +74,7 @@ export class TowerPanel {
       if (this.currentTower) {
         this.towerManager.sellTower(this.currentTower)
         this.setTower(null)
+        this.saveCallback?.()
       }
     })
     this.container.add(this.sellBtn)
@@ -141,6 +143,7 @@ export class TowerPanel {
       }
     } else {
       this.refresh()
+      this.saveCallback?.()
     }
   }
 
@@ -154,6 +157,10 @@ export class TowerPanel {
     if (purchased) btn.bg.setFillStyle(0x2a5a2a)
     else if (available && this.currentTower.canUpgradePath(path)) btn.bg.setFillStyle(pathColors[path])
     else btn.bg.setFillStyle(0x2a2a2a)
+  }
+
+  onSaveNeeded(cb: () => void): void {
+    this.saveCallback = cb
   }
 
   setTower(tower: BaseTower | null): void {

@@ -18,13 +18,27 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
   // Effective stats (recalculated on upgrade)
   effectiveRange: number
   effectiveCooldown: number
-  effectiveDamage: number
-  effectivePierce: number
   effectiveDamageType: DamageType
   effectiveProjectileSpeed: number
 
+  // Backing fields — write here during upgrades to avoid baking in village bonuses
+  protected _effectiveDamage: number = 0
+  protected _effectivePierce: number = 0
+
+  // Set each frame by TowerManager based on nearby MonkeyVillage upgrades
+  villageDamageBonus: number = 0
+  villagePierceBonus: number = 0
+  villageSpeedMultiplier: number = 1.0
+
+  get effectiveDamage(): number { return this._effectiveDamage + this.villageDamageBonus }
+  set effectiveDamage(v: number) { this._effectiveDamage = v }
+
+  get effectivePierce(): number { return this._effectivePierce + this.villagePierceBonus }
+  set effectivePierce(v: number) { this._effectivePierce = v }
+
   protected rangeCircle: Phaser.GameObjects.Arc
   protected body: Phaser.GameObjects.Arc
+  protected sprite: Phaser.GameObjects.Image | null = null
   protected barrel: Phaser.GameObjects.Rectangle
   protected barrelPivot: Phaser.GameObjects.Container
   protected customGfx: Phaser.GameObjects.Graphics
@@ -51,8 +65,8 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
 
     this.effectiveRange = config.range
     this.effectiveCooldown = config.cooldown
-    this.effectiveDamage = config.damage
-    this.effectivePierce = config.pierce
+    this._effectiveDamage = config.damage
+    this._effectivePierce = config.pierce
     this.effectiveDamageType = config.damageType
     this.effectiveProjectileSpeed = config.projectileSpeed
 
@@ -65,30 +79,43 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
     this.add(this.rangeCircle)
 
     // Drop shadow
-    const shadow = scene.add.arc(2, 3, 19, 0, 360, false, 0x000000, 0.28)
+    const shadow = scene.add.arc(2, 4, 24, 0, 360, false, 0x000000, 0.28)
     this.add(shadow)
 
-    // Circular tower body
-    this.body = scene.add.arc(0, 0, 18, 0, 360, false, config.color)
-    this.body.setStrokeStyle(2.5, this.darkenHex(config.color, 0.45))
+    // Circular tower body (hidden when a portrait sprite is available)
+    this.body = scene.add.arc(0, 0, 22, 0, 360, false, config.color)
+    this.body.setStrokeStyle(3, this.darkenHex(config.color, 0.45))
     this.add(this.body)
+
+    // Create sprite now but defer adding to container — it must sit above customGfx
+    if (scene.textures.exists(config.id)) {
+      this.body.setVisible(false)
+      this.sprite = scene.add.image(0, 0, config.id)
+      this.sprite.setDisplaySize(50, 50)
+    }
 
     // Custom graphics layer — subclasses draw their unique shape here
     this.customGfx = scene.add.graphics()
     this.add(this.customGfx)
 
     // Barrel in a pivot container so it rotates around tower centre
-    this.barrel = scene.add.rectangle(13, 0, 18, 7, this.darkenHex(config.color, 0.35))
+    this.barrel = scene.add.rectangle(16, 0, 22, 8, this.darkenHex(config.color, 0.35))
     this.barrel.setStrokeStyle(1.5, this.darkenHex(config.color, 0.65))
     this.barrelPivot = scene.add.container(0, 0)
     this.barrelPivot.add(this.barrel)
     this.add(this.barrelPivot)
 
+    // Add sprite last so it renders on top of body, customGfx, and barrel
+    if (this.sprite) {
+      this.barrelPivot.setVisible(false)
+      this.add(this.sprite)
+    }
+
     scene.add.existing(this)
     this.setDepth(15)
 
     // Make interactive
-    this.setSize(40, 40)
+    this.setSize(50, 50)
     this.setInteractive()
   }
 
@@ -131,7 +158,7 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
     this.idleTween?.pause()
 
     // Expanding gold ring
-    const ring = this.scene.add.arc(this.x, this.y, 18, 0, 360, false, 0xFFD700, 0)
+    const ring = this.scene.add.arc(this.x, this.y, 22, 0, 360, false, 0xFFD700, 0)
     ring.setStrokeStyle(3, 0xFFD700, 1)
     ring.setDepth(40)
     this.scene.tweens.add({
@@ -156,7 +183,7 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
     })
 
     // Gold flash overlay
-    const flash = this.scene.add.arc(this.x, this.y, 22, 0, 360, false, 0xFFD700, 0.5)
+    const flash = this.scene.add.arc(this.x, this.y, 28, 0, 360, false, 0xFFD700, 0.5)
     flash.setDepth(40)
     this.scene.tweens.add({
       targets: flash, alpha: 0,
@@ -184,7 +211,7 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
         this.faceTarget(target)
         this.attack(target, bloons, time)
         this.showAttackAnimation()
-        this.cooldownTimer = this.effectiveCooldown
+        this.cooldownTimer = this.effectiveCooldown * this.villageSpeedMultiplier
       }
     }
   }
@@ -219,13 +246,14 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
     this.applyUpgradeEffect(upgrade.effect, path)
     this.recomputeStats()
     this.updateVisuals()
+    this.updateTier5Portrait()
     this.playUpgradeAnimation()
     return true
   }
 
   protected applyUpgradeEffect(effect: UpgradeEffect, path: 0 | 1 | 2): void {
-    if (effect.damageBonus) this.effectiveDamage += effect.damageBonus
-    if (effect.pierceBonus) this.effectivePierce += effect.pierceBonus
+    if (effect.damageBonus) this._effectiveDamage += effect.damageBonus
+    if (effect.pierceBonus) this._effectivePierce += effect.pierceBonus
     if (effect.rangeMultiplier) {
       this.effectiveRange *= effect.rangeMultiplier
       this.rangeCircle.setRadius(this.effectiveRange)
@@ -243,6 +271,27 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
 
   protected updateVisuals(): void {
     // Subclasses override to redraw customGfx and recolor barrels on upgrade
+  }
+
+  private updateTier5Portrait(): void {
+    const tier5Path = this.upgradeTiers.findIndex(t => t === 5)
+    if (tier5Path === -1) return
+
+    const prefix = tier5Path === 0 ? '500' : tier5Path === 1 ? '050' : '005'
+    const key = `${this.config.id}_${prefix}`
+
+    if (!this.scene.textures.exists(key)) return
+
+    if (this.sprite) {
+      this.sprite.setTexture(key)
+      this.sprite.setDisplaySize(55, 55)
+    } else {
+      this.sprite = this.scene.add.image(0, 0, key)
+      this.sprite.setDisplaySize(55, 55)
+      this.add(this.sprite)
+      this.body.setVisible(false)
+      this.barrelPivot.setVisible(false)
+    }
   }
 
   protected darkenHex(color: number, factor: number): number {
@@ -265,9 +314,9 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
     // Muzzle flash at barrel tip
     const angle = this.barrelPivot.rotation
     const flash = this.scene.add.arc(
-      this.x + Math.cos(angle) * 24,
-      this.y + Math.sin(angle) * 24,
-      5, 0, 360, false, 0xFFFF99, 0.9
+      this.x + Math.cos(angle) * 30,
+      this.y + Math.sin(angle) * 30,
+      6, 0, 360, false, 0xFFFF99, 0.9
     )
     flash.setDepth(30)
     this.scene.tweens.add({
@@ -286,23 +335,28 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
     this.totalSpent = totalSpentAcrossDonors
     this.upgradeTiers = [5, 5, 5]
     this.hasCamoDetection = true
-    this.effectiveDamage = this.config.damage * 10
-    this.effectivePierce = this.config.pierce * 5
+    this._effectiveDamage = this.config.damage * 10
+    this._effectivePierce = this.config.pierce * 5
     this.effectiveRange = this.config.range * 1.5
     this.effectiveCooldown = this.config.cooldown * 0.25
     this.effectiveProjectileSpeed = this.config.projectileSpeed * 1.5
     this.effectiveDamageType = DamageType.Normal
 
-    // Gold paragon body
-    this.body.setFillStyle(0xFFD700)
-    this.body.setStrokeStyle(3, 0xFF8800)
-    this.body.setRadius(24)
+    // Gold paragon body / sprite tint
+    if (this.sprite) {
+      this.sprite.setTint(0xFFD700)
+      this.sprite.setDisplaySize(60, 60)
+    } else {
+      this.body.setFillStyle(0xFFD700)
+      this.body.setStrokeStyle(3, 0xFF8800)
+      this.body.setRadius(30)
+    }
     this.rangeCircle.setRadius(this.effectiveRange)
 
     // Paragon animation — triple ring burst + continuous glow
     this.idleTween?.destroy()
     for (let i = 0; i < 3; i++) {
-      const r = this.scene.add.arc(this.x, this.y, 24, 0, 360, false, 0xFF8800, 0)
+      const r = this.scene.add.arc(this.x, this.y, 30, 0, 360, false, 0xFF8800, 0)
       r.setStrokeStyle(3, i === 1 ? 0xFFFFFF : 0xFFD700, 1)
       r.setDepth(40)
       this.scene.tweens.add({
@@ -333,6 +387,31 @@ export abstract class BaseTower extends Phaser.GameObjects.Container {
     this.customGfx.fillTriangle(-8, 0, 0, 14, 8, 0)
     this.barrel.setFillStyle(0xFF4400)
     this.barrel.setStrokeStyle(1.5, 0x882200)
+  }
+
+  restoreFromSave(
+    tiers: [number, number, number],
+    targeting: TargetingMode,
+    savedTotalSpent: number,
+    paragon: boolean,
+  ): void {
+    if (paragon) {
+      this.upgradeToParagon(savedTotalSpent)
+      this.targeting = targeting
+      return
+    }
+    for (let path = 0; path <= 2; path++) {
+      for (let tier = 0; tier < tiers[path as 0 | 1 | 2]; tier++) {
+        const upgrade = this.config.upgrades[path as 0 | 1 | 2][tier]
+        this.applyUpgradeEffect(upgrade.effect, path as 0 | 1 | 2)
+      }
+      this.upgradeTiers[path as 0 | 1 | 2] = tiers[path as 0 | 1 | 2]
+    }
+    this.totalSpent = savedTotalSpent
+    this.targeting = targeting
+    this.recomputeStats()
+    this.updateVisuals()
+    this.updateTier5Portrait()
   }
 
   getSellValue(): number {

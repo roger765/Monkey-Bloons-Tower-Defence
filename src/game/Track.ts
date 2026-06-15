@@ -6,6 +6,12 @@ export interface Waypoint {
   y: number
 }
 
+export interface Pond {
+  x: number
+  y: number
+  radius: number
+}
+
 interface Segment {
   start: Phaser.Math.Vector2
   end: Phaser.Math.Vector2
@@ -45,10 +51,12 @@ export class Track {
   waypoints: Phaser.Math.Vector2[]
   private scene: Phaser.Scene
   private colors: TrackColors
+  private ponds: Pond[]
 
-  constructor(scene: Phaser.Scene, waypoints: Waypoint[], colors?: Partial<TrackColors>) {
+  constructor(scene: Phaser.Scene, waypoints: Waypoint[], ponds: Pond[] = [], colors?: Partial<TrackColors>) {
     this.scene = scene
     this.waypoints = waypoints.map(w => new Phaser.Math.Vector2(w.x, w.y))
+    this.ponds = ponds
     this.colors = {
       grass: colors?.grass ?? GRASS_COLOR,
       track: colors?.track ?? TRACK_COLOR,
@@ -112,6 +120,15 @@ export class Track {
     return false
   }
 
+  isOnPond(x: number, y: number): boolean {
+    for (const pond of this.ponds) {
+      const dx = x - pond.x
+      const dy = y - pond.y
+      if (dx * dx + dy * dy <= pond.radius * pond.radius) return true
+    }
+    return false
+  }
+
   private pointToSegmentDistance(px: number, py: number, a: Phaser.Math.Vector2, b: Phaser.Math.Vector2): number {
     const dx = b.x - a.x
     const dy = b.y - a.y
@@ -129,6 +146,16 @@ export class Track {
     const mapBottom = GAME_HEIGHT - HUD_BOTTOM_HEIGHT
     graphics.fillStyle(this.colors.grass, 1)
     graphics.fillRect(0, mapTop, GAME_WIDTH, mapBottom - mapTop)
+
+    // Draw water ponds
+    for (const pond of this.ponds) {
+      graphics.fillStyle(0x1A6AAF, 1)
+      graphics.fillCircle(pond.x, pond.y, pond.radius)
+      graphics.fillStyle(0x5AAEDD, 0.35)
+      graphics.fillCircle(pond.x - pond.radius * 0.22, pond.y - pond.radius * 0.22, pond.radius * 0.42)
+      graphics.lineStyle(3, 0x0D4070, 0.9)
+      graphics.strokeCircle(pond.x, pond.y, pond.radius)
+    }
 
     graphics.lineStyle(TRACK_WIDTH + 8, this.colors.border, 1)
     graphics.beginPath()
