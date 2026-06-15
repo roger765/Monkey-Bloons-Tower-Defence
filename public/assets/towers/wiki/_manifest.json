@@ -1,0 +1,668 @@
+[
+  {
+    "file": "000-Alchemist.png",
+    "source": "File:000-Alchemist.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/e/ea/000-Alchemist.png/revision/latest?cb=20190522004808&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-BananaFarm.png",
+    "source": "File:000-BananaFarm.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/c/cb/000-BananaFarm.png/revision/latest?cb=20190522014608&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-BombShooter.png",
+    "source": "File:000-BombShooter.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/b1/000-BombShooter.png/revision/latest?cb=20190522014655&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-BoomerangMonkey.png",
+    "source": "File:000-BoomerangMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/0/03/000-BoomerangMonkey.png/revision/latest?cb=20190522022726&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-DartMonkey.png",
+    "source": "File:000-DartMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/b2/000-DartMonkey.png/revision/latest?cb=20190522014750&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-DartlingGunner.png",
+    "source": "File:000-DartlingGunner.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/f/f3/000-DartlingGunner.png/revision/latest?cb=20201203034034&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-Desperado.png",
+    "source": "File:000-Desperado.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/6/64/000-Desperado.png/revision/latest?cb=20250618065544&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-Druid.png",
+    "source": "File:000-Druid.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/4/47/000-Druid.png/revision/latest?cb=20190522014751&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-EngineerMonkey.png",
+    "source": "File:000-EngineerMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/9/98/000-EngineerMonkey.png/revision/latest?cb=20190921173225&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-GlueGunner.png",
+    "source": "File:000-GlueGunner.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/3/37/000-GlueGunner.png/revision/latest?cb=20190522014752&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-HeliPilot.png",
+    "source": "File:000-HeliPilot.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/1/17/000-HeliPilot.png/revision/latest?cb=20190522014904&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-IceMonkey.png",
+    "source": "File:000-IceMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/d/dc/000-IceMonkey.png/revision/latest?cb=20190522014905&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-Mermonkey.png",
+    "source": "File:000-Mermonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/f/f4/000-Mermonkey.png/revision/latest?cb=20240801065305&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-MonkeyAce.png",
+    "source": "File:000-MonkeyAce.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/b4/000-MonkeyAce.png/revision/latest?cb=20190522014906&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-MonkeyBuccaneer.png",
+    "source": "File:000-MonkeyBuccaneer.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/1/18/000-MonkeyBuccaneer.png/revision/latest?cb=20190522014906&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-MonkeySub.png",
+    "source": "File:000-MonkeySub.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/9/90/000-MonkeySub.png/revision/latest?cb=20190522014907&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-MonkeyVillage.png",
+    "source": "File:000-MonkeyVillage.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/8/8b/000-MonkeyVillage.png/revision/latest?cb=20190522015009&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-MortarMonkey.png",
+    "source": "File:000-MortarMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/8/8d/000-MortarMonkey.png/revision/latest?cb=20190522015009&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-NinjaMonkey.png",
+    "source": "File:000-NinjaMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/2/28/000-NinjaMonkey.png/revision/latest?cb=20190522015010&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-SniperMonkey.png",
+    "source": "File:000-SniperMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/4/40/000-SniperMonkey.png/revision/latest?cb=20190522015010&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-SpikeFactory.png",
+    "source": "File:000-SpikeFactory.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/f/f6/000-SpikeFactory.png/revision/latest?cb=20190522015011&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-SuperMonkey.png",
+    "source": "File:000-SuperMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/3/3d/000-SuperMonkey.png/revision/latest?cb=20190522015101&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-TackShooter.png",
+    "source": "File:000-TackShooter.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/7/71/000-TackShooter.png/revision/latest?cb=20190522015101&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "000-WizardMonkey.png",
+    "source": "File:000-WizardMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/9/99/000-WizardMonkey.png/revision/latest?cb=20190522015102&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-Alchemist.png",
+    "source": "File:005-Alchemist.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/3/3d/005-Alchemist.png/revision/latest?cb=20190522005115&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-BananaFarm.png",
+    "source": "File:005-BananaFarm.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/f/f5/005-BananaFarm.png/revision/latest?cb=20190522022730&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-BeastHandler.png",
+    "source": "File:005-BeastHandler.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/e/e8/005-BeastHandler.png/revision/latest?cb=20230404070934&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-BombShooter.png",
+    "source": "File:005-BombShooter.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/e/ef/005-BombShooter.png/revision/latest?cb=20190522022731&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-BoomerangMonkey.png",
+    "source": "File:005-BoomerangMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/1/16/005-BoomerangMonkey.png/revision/latest?cb=20190522022619&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-DartMonkey.png",
+    "source": "File:005-DartMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/b2/005-DartMonkey.png/revision/latest?cb=20190522022954&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-DartlingGunner.png",
+    "source": "File:005-DartlingGunner.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/9/92/005-DartlingGunner.png/revision/latest?cb=20201203034318&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-Desperado.png",
+    "source": "File:005-Desperado.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/6/63/005-Desperado.png/revision/latest?cb=20250618065546&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-Druid.png",
+    "source": "File:005-Druid.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/4/45/005-Druid.png/revision/latest?cb=20190522022954&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-EngineerMonkey.png",
+    "source": "File:005-EngineerMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/d/db/005-EngineerMonkey.png/revision/latest?cb=20190921173833&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-GlueGunner.png",
+    "source": "File:005-GlueGunner.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/3/39/005-GlueGunner.png/revision/latest?cb=20190522022955&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-HeliPilot.png",
+    "source": "File:005-HeliPilot.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/2/22/005-HeliPilot.png/revision/latest?cb=20190522022956&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-IceMonkey.png",
+    "source": "File:005-IceMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/2/25/005-IceMonkey.png/revision/latest?cb=20190522022956&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-Mermonkey.png",
+    "source": "File:005-Mermonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/4/4f/005-Mermonkey.png/revision/latest?cb=20240801065624&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-MonkeyAce.png",
+    "source": "File:005-MonkeyAce.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/1/13/005-MonkeyAce.png/revision/latest?cb=20190522023025&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-MonkeyBuccaneer.png",
+    "source": "File:005-MonkeyBuccaneer.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/6/66/005-MonkeyBuccaneer.png/revision/latest?cb=20190522023026&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-MonkeySub.png",
+    "source": "File:005-MonkeySub.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/4/46/005-MonkeySub.png/revision/latest?cb=20190522023026&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-MonkeyVillage.png",
+    "source": "File:005-MonkeyVillage.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/d/df/005-MonkeyVillage.png/revision/latest?cb=20190522023027&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-MortarMonkey.png",
+    "source": "File:005-MortarMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/a/a1/005-MortarMonkey.png/revision/latest?cb=20190522023027&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-NinjaMonkey.png",
+    "source": "File:005-NinjaMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/b6/005-NinjaMonkey.png/revision/latest?cb=20190522023059&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-SniperMonkey.png",
+    "source": "File:005-SniperMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/7/78/005-SniperMonkey.png/revision/latest?cb=20190522023059&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-SpikeFactory.png",
+    "source": "File:005-SpikeFactory.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/3/38/005-SpikeFactory.png/revision/latest?cb=20190522023100&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-SuperMonkey.png",
+    "source": "File:005-SuperMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/e/e9/005-SuperMonkey.png/revision/latest?cb=20190522023101&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-TackShooter.png",
+    "source": "File:005-TackShooter.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/7/73/005-TackShooter.png/revision/latest?cb=20190522023101&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "005-WizardMonkey.png",
+    "source": "File:005-WizardMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/1/1b/005-WizardMonkey.png/revision/latest?cb=20190522023147&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-Alchemist.png",
+    "source": "File:050-Alchemist.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/2/27/050-Alchemist.png/revision/latest?cb=20190522005729&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-BananaFarm.png",
+    "source": "File:050-BananaFarm.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/e/e8/050-BananaFarm.png/revision/latest?cb=20190522024459&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-BeastHandler.png",
+    "source": "File:050-BeastHandler.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/a/a9/050-BeastHandler.png/revision/latest?cb=20230404070930&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-BombShooter.png",
+    "source": "File:050-BombShooter.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/d/d5/050-BombShooter.png/revision/latest?cb=20190522024500&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-BoomerangMonkey.png",
+    "source": "File:050-BoomerangMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/1/1a/050-BoomerangMonkey.png/revision/latest?cb=20190522024500&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-DartMonkey.png",
+    "source": "File:050-DartMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/7/7f/050-DartMonkey.png/revision/latest?cb=20190522024501&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-DartlingGunner.png",
+    "source": "File:050-DartlingGunner.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/1/19/050-DartlingGunner.png/revision/latest?cb=20201203034520&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-Desperado.png",
+    "source": "File:050-Desperado.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/7/78/050-Desperado.png/revision/latest?cb=20250618065546&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-Druid.png",
+    "source": "File:050-Druid.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/e/e7/050-Druid.png/revision/latest?cb=20190522024501&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-EngineerMonkey.png",
+    "source": "File:050-EngineerMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/2/2a/050-EngineerMonkey.png/revision/latest?cb=20190921173715&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-GlueGunner.png",
+    "source": "File:050-GlueGunner.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/d/d3/050-GlueGunner.png/revision/latest?cb=20190522024526&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-HeliPilot.png",
+    "source": "File:050-HeliPilot.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/1/1c/050-HeliPilot.png/revision/latest?cb=20190522024526&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-IceMonkey.png",
+    "source": "File:050-IceMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/8/8c/050-IceMonkey.png/revision/latest?cb=20190522024527&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-Mermonkey.png",
+    "source": "File:050-Mermonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/3/38/050-Mermonkey.png/revision/latest?cb=20240801065628&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-MonkeyAce.png",
+    "source": "File:050-MonkeyAce.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/8/86/050-MonkeyAce.png/revision/latest?cb=20190522024527&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-MonkeyBuccaneer.png",
+    "source": "File:050-MonkeyBuccaneer.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/0/0a/050-MonkeyBuccaneer.png/revision/latest?cb=20190522024528&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-MonkeySub.png",
+    "source": "File:050-MonkeySub.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/1/1f/050-MonkeySub.png/revision/latest?cb=20190522024553&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-MonkeyVillage.png",
+    "source": "File:050-MonkeyVillage.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/b4/050-MonkeyVillage.png/revision/latest?cb=20190522024553&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-MortarMonkey.png",
+    "source": "File:050-MortarMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/9/97/050-MortarMonkey.png/revision/latest?cb=20190522024554&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-NinjaMonkey.png",
+    "source": "File:050-NinjaMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/5/5b/050-NinjaMonkey.png/revision/latest?cb=20190522024554&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-SniperMonkey.png",
+    "source": "File:050-SniperMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/8/85/050-SniperMonkey.png/revision/latest?cb=20190522024555&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-SpikeFactory.png",
+    "source": "File:050-SpikeFactory.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/2/23/050-SpikeFactory.png/revision/latest?cb=20190522024618&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-SuperMonkey.png",
+    "source": "File:050-SuperMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/e/e2/050-SuperMonkey.png/revision/latest?cb=20190522024619&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-TackShooter.png",
+    "source": "File:050-TackShooter.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/2/24/050-TackShooter.png/revision/latest?cb=20190522024619&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "050-WizardMonkey.png",
+    "source": "File:050-WizardMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/b5/050-WizardMonkey.png/revision/latest?cb=20190522024620&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-Alchemist.png",
+    "source": "File:500-Alchemist.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/5/5e/500-Alchemist.png/revision/latest?cb=20190522005559&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-BananaFarm.png",
+    "source": "File:500-BananaFarm.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/2/27/500-BananaFarm.png/revision/latest?cb=20190522024910&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-BeastHandler.png",
+    "source": "File:500-BeastHandler.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/c/cc/500-BeastHandler.png/revision/latest?cb=20230404070937&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-BombShooter.png",
+    "source": "File:500-BombShooter.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/7/72/500-BombShooter.png/revision/latest?cb=20190522024909&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-BoomerangMonkey.png",
+    "source": "File:500-BoomerangMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/9/9a/500-BoomerangMonkey.png/revision/latest?cb=20190522024909&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-DartMonkey.png",
+    "source": "File:500-DartMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/4/4f/500-DartMonkey.png/revision/latest?cb=20190522024840&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-DartlingGunner.png",
+    "source": "File:500-DartlingGunner.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/7/79/500-DartlingGunner.png/revision/latest?cb=20201203034655&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-Desperado.png",
+    "source": "File:500-Desperado.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/0/01/500-Desperado.png/revision/latest?cb=20250618065547&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-Druid.png",
+    "source": "File:500-Druid.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/be/500-Druid.png/revision/latest?cb=20190522024840&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-EngineerMonkey.png",
+    "source": "File:500-EngineerMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/6/68/500-EngineerMonkey.png/revision/latest?cb=20190921173547&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-GlueGunner.png",
+    "source": "File:500-GlueGunner.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/4/4b/500-GlueGunner.png/revision/latest?cb=20190522024839&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-HeliPilot.png",
+    "source": "File:500-HeliPilot.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/7/77/500-HeliPilot.png/revision/latest?cb=20190522024839&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-IceMonkey.png",
+    "source": "File:500-IceMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/1/1f/500-IceMonkey.png/revision/latest?cb=20190522024838&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-Mermonkey.png",
+    "source": "File:500-Mermonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/5/52/500-Mermonkey.png/revision/latest?cb=20240801065626&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-MonkeyAce.png",
+    "source": "File:500-MonkeyAce.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/4/45/500-MonkeyAce.png/revision/latest?cb=20190522024713&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-MonkeyBuccaneer.png",
+    "source": "File:500-MonkeyBuccaneer.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/f/ff/500-MonkeyBuccaneer.png/revision/latest?cb=20190522024713&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-MonkeySub.png",
+    "source": "File:500-MonkeySub.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/9/9d/500-MonkeySub.png/revision/latest?cb=20190522024712&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-MonkeyVillage.png",
+    "source": "File:500-MonkeyVillage.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/a/a7/500-MonkeyVillage.png/revision/latest?cb=20190522024712&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-MortarMonkey.png",
+    "source": "File:500-MortarMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/e/ed/500-MortarMonkey.png/revision/latest?cb=20190611000351&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-NinjaMonkey.png",
+    "source": "File:500-NinjaMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/a/a5/500-NinjaMonkey.png/revision/latest?cb=20190522024711&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-SniperMonkey.png",
+    "source": "File:500-SniperMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/d/de/500-SniperMonkey.png/revision/latest?cb=20190522023539&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-SpikeFactory.png",
+    "source": "File:500-SpikeFactory.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/e/ea/500-SpikeFactory.png/revision/latest?cb=20230322222159&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-SuperMonkey.png",
+    "source": "File:500-SuperMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/6/67/500-SuperMonkey.png/revision/latest?cb=20190522023538&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-TackShooter.png",
+    "source": "File:500-TackShooter.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/3/3b/500-TackShooter.png/revision/latest?cb=20190522023537&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "500-WizardMonkey.png",
+    "source": "File:500-WizardMonkey.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/ba/500-WizardMonkey.png/revision/latest?cb=20190522023538&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "BeastHandlerIcon.png",
+    "source": "File:BeastHandlerIcon.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/bf/BeastHandlerIcon.png/revision/latest?cb=20221207233417&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "BloonjaminsIcon.png",
+    "source": "File:BloonjaminsIcon.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/2/27/BloonjaminsIcon.png/revision/latest?cb=20200608020230&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "E688AEB7-BC1A-4392-8818-67A62B2A9646.png",
+    "source": "File:E688AEB7-BC1A-4392-8818-67A62B2A9646.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/a/a2/E688AEB7-BC1A-4392-8818-67A62B2A9646.png/revision/latest?cb=20221205061658&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "GoldContainer.png",
+    "source": "File:GoldContainer.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/c/c6/GoldContainer.png/revision/latest?cb=20210801081913&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "Icon_money.png",
+    "source": "File:Icon money.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/f/fc/Icon_money.png/revision/latest?cb=20230423011012&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "InstaRandomTier5.png",
+    "source": "File:InstaRandomTier5.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/0/0e/InstaRandomTier5.png/revision/latest?cb=20201022043927&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "MasterDoubleCrossIcon.png",
+    "source": "File:MasterDoubleCrossIcon.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/b/b8/MasterDoubleCrossIcon.png/revision/latest?cb=20200714064539&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "Qwertyxp2000_2023-01-15_(2).PNG",
+    "source": "File:Qwertyxp2000 2023-01-15 (2).PNG",
+    "url": "https://static.wikia.nocookie.net/b__/images/6/6c/Qwertyxp2000_2023-01-15_%282%29.PNG/revision/latest?cb=20230123052546&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "Somedisplaybug.png",
+    "source": "File:Somedisplaybug.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/3/3d/Somedisplaybug.png/revision/latest?cb=20180904045614&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "T5MonkeyIcon.png",
+    "source": "File:T5MonkeyIcon.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/f/fb/T5MonkeyIcon.png/revision/latest?cb=20210808051630&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "Ultimatepower.png",
+    "source": "File:Ultimatepower.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/5/53/Ultimatepower.png/revision/latest?cb=20190705100442&path-prefix=bloons",
+    "status": "downloaded"
+  },
+  {
+    "file": "UpgradeContainerTier5Locked.png",
+    "source": "File:UpgradeContainerTier5Locked.png",
+    "url": "https://static.wikia.nocookie.net/b__/images/9/9a/UpgradeContainerTier5Locked.png/revision/latest?cb=20220422061923&path-prefix=bloons",
+    "status": "downloaded"
+  }
+]
