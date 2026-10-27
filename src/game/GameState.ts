@@ -77,6 +77,10 @@ export class GameState {
     }
   }
 
+  gainLife(count: number = 1): void {
+    this.lives = Math.min(this.maxLives, this.lives + count)
+  }
+
   getCashPerPopMultiplier(): number {
     const r = this.round
     if (r <= 50) return 1.0

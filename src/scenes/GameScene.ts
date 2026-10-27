@@ -11,6 +11,7 @@ import { HUD } from '../ui/HUD'
 import { TowerShop } from '../ui/TowerShop'
 import { TowerPanel } from '../ui/TowerPanel'
 import { FreePlaySpawner } from '../ui/FreePlaySpawner'
+import { DartlingGunner } from '../towers/DartlingGunner'
 import { TowerConfig } from '../types'
 import { TOWER_CONFIGS } from '../data/towers'
 import { SaveManager } from '../game/SaveManager'
@@ -139,6 +140,14 @@ export class GameScene extends Phaser.Scene {
     // Map click: place tower or deselect
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (pointer.y < HUD_TOP_HEIGHT || pointer.y > GAME_HEIGHT - HUD_BOTTOM_HEIGHT) return
+
+      // Dartling Gunner pending-lock: next click sets the aim direction
+      const selected = this.towerManager.getSelectedTower()
+      if (selected instanceof DartlingGunner && selected.lockState === 'pending') {
+        selected.confirmLockAt(pointer.x, pointer.y)
+        this.towerPanel.notifyLockConfirmed()
+        return
+      }
 
       if (gameState.placingTowerId) {
         const placed = this.towerManager.placeTower(gameState.placingTowerId, pointer.x, pointer.y)
@@ -278,11 +287,12 @@ export class GameScene extends Phaser.Scene {
 
     // Update systems
     if (gameState.isWaveActive) {
-      this.roundSystem.update(scaledDelta)
+      this.roundSystem.update(scaledDelta, time)
+      const activeBloons = this.bloonManager.getActiveBloons()
       this.bloonManager.update(scaledDelta, time)
-      this.towerManager.update(scaledDelta, time)
-      this.projectileManager.update(scaledDelta, this.bloonManager.getActiveBloons(), time)
+      this.projectileManager.update(scaledDelta, activeBloons, time)
     }
+    this.towerManager.update(scaledDelta, time)
 
     // UI updates (always, for real-time feedback)
     this.hud.update()

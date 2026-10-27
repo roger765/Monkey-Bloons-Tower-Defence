@@ -291,4 +291,40 @@ export const MAP_CONFIGS: Record<MapId, MapConfig> = {
       { x: W * 0.30, y: T + H * 0.83, radius: 48 },
     ],
   },
+
+  // ─── Extreme ────────────────────────────────────────────────────────────────
+
+  [MapId.TheGauntlet]: {
+    id: MapId.TheGauntlet,
+    name: 'The Gauntlet',
+    description: 'Nested spiral — no mercy',
+    difficulty: 'Extreme',
+    difficultyColor: '#CC22FF',
+    grassColor: 0x141018,
+    trackColor: 0x9A1F1F,
+    borderColor: 0x3A0A0A,
+    // Bloons enter top-left, lap clockwise through three concentric rings,
+    // then tunnel out to the finish at bottom-left.
+    waypoints: [
+      { x: -10,      y: T + H * 0.09 },  // spawn (top-left)
+      { x: W * 0.95, y: T + H * 0.09 },  // → outer top
+      { x: W * 0.95, y: T + H * 0.90 },  // ↓ outer right
+      { x: W * 0.12, y: T + H * 0.90 },  // ← outer bottom
+      { x: W * 0.12, y: T + H * 0.20 },  // ↑ outer left (begin ring 2)
+      { x: W * 0.84, y: T + H * 0.20 },  // → ring 2 top
+      { x: W * 0.84, y: T + H * 0.78 },  // ↓ ring 2 right
+      { x: W * 0.26, y: T + H * 0.78 },  // ← ring 2 bottom
+      { x: W * 0.26, y: T + H * 0.34 },  // ↑ ring 2 left (begin ring 3)
+      { x: W * 0.70, y: T + H * 0.34 },  // → ring 3 top
+      { x: W * 0.70, y: T + H * 0.64 },  // ↓ ring 3 right
+      { x: W * 0.42, y: T + H * 0.64 },  // ← ring 3 bottom (centre)
+      { x: W * 0.42, y: T + H * 0.97 },  // ↓ tunnel out through the rings
+      { x: -10,      y: T + H * 0.97 },  // finish (bottom-left)
+    ],
+    ponds: [
+      { x: W * 0.90, y: T + H * 0.155, radius: 30 },  // top-right
+      { x: W * 0.05, y: T + H * 0.52,  radius: 40 },  // mid-left
+      { x: W * 0.86, y: T + H * 0.965, radius: 24 },  // bottom-right
+    ],
+  },
 }

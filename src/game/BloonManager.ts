@@ -32,6 +32,8 @@ export class Bloon extends Phaser.GameObjects.Container {
   private hpBar: Phaser.GameObjects.Rectangle | null = null
   private hpBarBg: Phaser.GameObjects.Rectangle | null = null
   private balloonGfx: Phaser.GameObjects.Graphics | null = null
+  private moabLabel: Phaser.GameObjects.Text | null = null
+  private _wasFrozen: boolean = false
 
   constructor(scene: Phaser.Scene, track: Track, manager: BloonManager) {
     super(scene, 0, 0)
@@ -56,7 +58,8 @@ export class Bloon extends Phaser.GameObjects.Container {
     distanceOffset: number = 0,
     isCamo: boolean = false,
     isRegrow: boolean = false,
-    isFortified: boolean = false
+    isFortified: boolean = false,
+    spawnTime: number = 0
   ): void {
     const cfg = BLOON_CONFIGS[bloonType]
     this.bloonType = bloonType
@@ -65,7 +68,8 @@ export class Bloon extends Phaser.GameObjects.Container {
     this.isFortified = isFortified
     this.statusEffects = []
     this.regrowTimer = 0
-    this.lastDamageTime = 0
+    this.lastDamageTime = spawnTime
+    this._wasFrozen = false
     this.distanceAlongTrack = distanceOffset
 
     // Apply fortified HP
@@ -100,12 +104,13 @@ export class Bloon extends Phaser.GameObjects.Container {
     this.circle.setStrokeStyle(2, cfg.outlineColor)
 
     if (cfg.isMoabClass) {
-      const label = this.scene.add.text(0, 0, cfg.displayName.split('.').join(''), {
+      if (this.moabLabel) { this.remove(this.moabLabel); this.moabLabel.destroy(); this.moabLabel = null }
+      this.moabLabel = this.scene.add.text(0, 0, cfg.displayName.split('.').join(''), {
         fontSize: `${Math.max(8, cfg.radius * 0.4)}px`,
         color: '#ffffff',
         fontStyle: 'bold',
       }).setOrigin(0.5)
-      this.add(label)
+      this.add(this.moabLabel)
       this.circle.setAlpha(0)
     }
 
@@ -151,6 +156,7 @@ export class Bloon extends Phaser.GameObjects.Container {
 
     if (cfg.isMoabClass) {
       const hw = r * 1.4   // half-length (nose-to-tail)
+      // Note: label is managed by updateVisuals(), not here
       const hh = r * 0.62  // half-height
 
       // Tail fins — drawn first so the hull ellipse covers their inner portions
@@ -300,14 +306,17 @@ export class Bloon extends Phaser.GameObjects.Container {
       this.statusEffects.splice(toRemove[i], 1)
     }
 
-    // Update freeze visual
-    if (this.isFrozen()) {
-      this.circle.setFillStyle(0xAAAAAA)
-    } else {
-      const cfg = BLOON_CONFIGS[this.bloonType]
-      this.circle.setFillStyle(cfg.color)
+    // Update freeze visual only when state changes
+    const nowFrozen = this.isFrozen()
+    if (nowFrozen !== this._wasFrozen) {
+      this._wasFrozen = nowFrozen
+      if (nowFrozen) {
+        this.circle.setFillStyle(0xAAAAAA)
+      } else {
+        this.circle.setFillStyle(BLOON_CONFIGS[this.bloonType].color)
+      }
+      this.drawBalloonDetails()
     }
-    this.drawBalloonDetails()
   }
 
   getSpeedMultiplier(): number {
@@ -473,6 +482,7 @@ export class Bloon extends Phaser.GameObjects.Container {
     this.setVisible(false)
     this.statusEffects = []
     this.balloonGfx?.clear()
+    if (this.moabLabel) { this.remove(this.moabLabel); this.moabLabel.destroy(); this.moabLabel = null }
   }
 
   private onExitTrack(): void {
@@ -488,7 +498,6 @@ export class BloonManager {
   private scene: Phaser.Scene
   private track: Track
   private pool: Bloon[] = []
-  private activeBloons: Bloon[] = []
   readonly POOL_SIZE = 400
 
   constructor(scene: Phaser.Scene, track: Track) {
@@ -517,19 +526,17 @@ export class BloonManager {
     isCamo: boolean = false,
     isRegrow: boolean = false,
     isFortified: boolean = false,
-    distanceOffset: number = 0
+    distanceOffset: number = 0,
+    time: number = 0
   ): Bloon | null {
     const bloon = this.getFromPool()
     if (!bloon) return null
-    bloon.spawn(bloonType, distanceOffset, isCamo, isRegrow, isFortified)
-    if (!this.activeBloons.includes(bloon)) {
-      this.activeBloons.push(bloon)
-    }
+    bloon.spawn(bloonType, distanceOffset, isCamo, isRegrow, isFortified, time)
     return bloon
   }
 
   spawnChild(bloonType: BloonType, parent: Bloon, time: number): Bloon | null {
-    return this.spawn(bloonType, parent.isCamo && false, parent.isRegrow, false, parent.distanceAlongTrack)
+    return this.spawn(bloonType, parent.isCamo && false, parent.isRegrow, false, parent.distanceAlongTrack, time)
     // Note: Camo property does NOT pass to children in standard BTD6
   }
 

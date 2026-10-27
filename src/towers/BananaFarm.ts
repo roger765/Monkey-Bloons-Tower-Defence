@@ -4,12 +4,13 @@ import { Bloon, BloonManager } from '../game/BloonManager'
 import { ProjectileManager } from '../game/ProjectileManager'
 import { getTowerConfig } from '../data/towers'
 import { gameState } from '../game/GameState'
-import { showCashPopup } from '../ui/CashPopup'
+import { showCashPopup, showLifePopup } from '../ui/CashPopup'
 
 export class BananaFarm extends BaseTower {
   private payoutAmount: number = 20       // $ earned each payout tick
   private payoutInterval: number = 8000   // ms between payouts (8 s)
   private payoutTimer: number = 0
+  private roundLifeBonus: number = 0      // lives granted at the end of each round
 
   constructor(
     scene: Phaser.Scene, x: number, y: number,
@@ -137,8 +138,16 @@ export class BananaFarm extends BaseTower {
     if (effect.specialBehavior === 'banana_absolutely') this.payoutAmount += 250
     if (effect.specialBehavior === 'increased_production') this.payoutInterval = Math.max(2000, this.payoutInterval - 2000)
     if (effect.specialBehavior === 'greater_production') this.payoutInterval = Math.max(2000, this.payoutInterval - 2000)
-    if (effect.specialBehavior === 'marketplace') this.payoutAmount += 25
-    if (effect.specialBehavior === 'central_market') this.payoutAmount += 50
+    if (effect.specialBehavior === 'marketplace') { this.payoutAmount += 25; this.roundLifeBonus = 1 }
+    if (effect.specialBehavior === 'central_market') { this.payoutAmount += 50; this.roundLifeBonus = 2 }
+    if (effect.specialBehavior === 'monkey_wall_street') this.roundLifeBonus = 3
+  }
+
+  onRoundEnd(): void {
+    if (this.roundLifeBonus > 0) {
+      gameState.gainLife(this.roundLifeBonus)
+      showLifePopup(this.scene, this.x, this.y, this.roundLifeBonus)
+    }
   }
 
   protected updateVisuals(): void {

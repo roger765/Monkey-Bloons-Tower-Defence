@@ -134,6 +134,7 @@ export enum MapId {
   StormRidge = 'storm_ridge',
   AncientRuins = 'ancient_ruins',
   NeonCity = 'neon_city',
+  TheGauntlet = 'the_gauntlet',
 }
 
 export interface DifficultyConfig {

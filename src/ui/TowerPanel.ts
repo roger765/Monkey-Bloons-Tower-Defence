@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { TargetingMode } from '../types'
 import { BaseTower } from '../towers/BaseTower'
+import { DartlingGunner } from '../towers/DartlingGunner'
 import { TowerManager } from '../game/TowerManager'
 import { gameState } from '../game/GameState'
 import { GAME_WIDTH, GAME_HEIGHT, HUD_BOTTOM_HEIGHT } from '../constants'
@@ -19,6 +20,7 @@ export class TowerPanel {
   private notationText: Phaser.GameObjects.Text
   private sellBtn: Phaser.GameObjects.Text
   private targetBtn: Phaser.GameObjects.Text
+  private lockBtn: Phaser.GameObjects.Text
   private upgradeButtons: {
     path: 0 | 1 | 2
     tier: number
@@ -78,6 +80,21 @@ export class TowerPanel {
       }
     })
     this.container.add(this.sellBtn)
+
+    // Lock button (Dartling Gunner only)
+    this.lockBtn = scene.add.text(GAME_WIDTH - 340, PANEL_Y + 14, 'Lock: OFF', {
+      fontSize: '12px', color: '#FFDD88',
+      backgroundColor: '#2a2000',
+      padding: { x: 6, y: 3 },
+    }).setOrigin(0, 0).setInteractive({ useHandCursor: true })
+    this.lockBtn.on('pointerdown', () => {
+      if (this.currentTower instanceof DartlingGunner) {
+        this.currentTower.pressLockButton()
+        this.refreshLockBtn()
+      }
+    })
+    this.lockBtn.setVisible(false)
+    this.container.add(this.lockBtn)
 
     // Upgrade path buttons: 3 paths, showing next tier each
     this.buildUpgradeButtons()
@@ -159,6 +176,10 @@ export class TowerPanel {
     else btn.bg.setFillStyle(0x2a2a2a)
   }
 
+  notifyLockConfirmed(): void {
+    this.refreshLockBtn()
+  }
+
   onSaveNeeded(cb: () => void): void {
     this.saveCallback = cb
   }
@@ -167,10 +188,29 @@ export class TowerPanel {
     this.currentTower = tower
     if (!tower) {
       this.container.setVisible(false)
+      this.lockBtn.setVisible(false)
       return
     }
     this.container.setVisible(true)
     this.refresh()
+  }
+
+  private refreshLockBtn(): void {
+    const isDartling = this.currentTower instanceof DartlingGunner
+    this.lockBtn.setVisible(isDartling)
+    if (isDartling) {
+      const state = (this.currentTower as DartlingGunner).lockState
+      if (state === 'locked') {
+        this.lockBtn.setText('Lock: ON')
+        this.lockBtn.setStyle({ color: '#FF8800', backgroundColor: '#3a1500' })
+      } else if (state === 'pending') {
+        this.lockBtn.setText('Lock: CLICK TO AIM')
+        this.lockBtn.setStyle({ color: '#FFFFFF', backgroundColor: '#1a3a1a' })
+      } else {
+        this.lockBtn.setText('Lock: OFF')
+        this.lockBtn.setStyle({ color: '#FFDD88', backgroundColor: '#2a2000' })
+      }
+    }
   }
 
   private refresh(): void {
@@ -179,6 +219,7 @@ export class TowerPanel {
     this.notationText.setText(`[${this.currentTower.getUpgradeNotation()}]`)
     this.targetBtn.setText(`Target: ${this.currentTower.targeting}`)
     this.sellBtn.setText(`Sell $${this.currentTower.getSellValue()}`)
+    this.refreshLockBtn()
 
     // Update upgrade buttons
     for (const btn of this.upgradeButtons) {

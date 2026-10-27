@@ -88,14 +88,14 @@ export class RoundSystem {
     return events
   }
 
-  update(delta: number): void {
+  update(delta: number, time: number = 0): void {
     if (!gameState.isWaveActive) return
     this.timer += delta / 1000
 
     // Process spawn events
     while (this.spawnQueue.length > 0 && this.spawnQueue[0].time <= this.timer) {
       const event = this.spawnQueue.shift()!
-      this.bloonManager.spawn(event.bloonType, event.isCamo, event.isRegrow, event.isFortified)
+      this.bloonManager.spawn(event.bloonType, event.isCamo, event.isRegrow, event.isFortified, 0, time)
     }
 
     // Track when spawn queue drains so we can force-end if bloons get stuck

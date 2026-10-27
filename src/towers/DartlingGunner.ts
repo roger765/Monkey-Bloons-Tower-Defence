@@ -11,6 +11,29 @@ export class DartlingGunner extends BaseTower {
   private laserGfx: Phaser.GameObjects.Graphics | null = null
   private laserTween: Phaser.Tweens.Tween | null = null
 
+  private _lockState: 'unlocked' | 'pending' | 'locked' = 'unlocked'
+  private lockedAngle: number = 0
+
+  get lockState(): 'unlocked' | 'pending' | 'locked' { return this._lockState }
+
+  // Called when the Lock button is pressed
+  pressLockButton(): void {
+    if (this._lockState === 'locked') {
+      this._lockState = 'unlocked'
+    } else {
+      // unlocked or pending → enter / re-enter pending
+      this._lockState = 'pending'
+    }
+  }
+
+  // Called when the player clicks the map while in pending state
+  confirmLockAt(worldX: number, worldY: number): void {
+    if (this._lockState !== 'pending') return
+    this.lockedAngle = Math.atan2(worldY - this.y, worldX - this.x)
+    this.barrelPivot.setRotation(this.lockedAngle)
+    this._lockState = 'locked'
+  }
+
   constructor(
     scene: Phaser.Scene, x: number, y: number,
     bloonManager: BloonManager, projectileManager: ProjectileManager
@@ -77,8 +100,21 @@ export class DartlingGunner extends BaseTower {
     this.barrel.setPosition(15, 0)
   }
 
+  update(delta: number, time: number): void {
+    if (this._lockState !== 'locked') {
+      const ptr = this.scene.input.activePointer
+      const angle = Math.atan2(ptr.y - this.y, ptr.x - this.x)
+      this.barrelPivot.setRotation(angle)
+    }
+    super.update(delta, time)
+  }
+
+  protected faceTarget(_target: Bloon): void {
+    // Barrel direction is managed by cursor tracking in update()
+  }
+
   attack(target: Bloon, allBloons: Bloon[], time: number): void {
-    const angle = Math.atan2(target.y - this.y, target.x - this.x)
+    const angle = this.barrelPivot.rotation
     this.fireBeam(angle)
     for (let i = 1; i <= this.spreadShots; i++) {
       this.fireBeam(angle + i * 0.12)

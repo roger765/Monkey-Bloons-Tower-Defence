@@ -9,11 +9,11 @@ import { SaveManager } from '../game/SaveManager'
 const MAP_TOP = HUD_TOP_HEIGHT
 const MAP_H = (GAME_HEIGHT - HUD_BOTTOM_HEIGHT) - MAP_TOP  // 560
 
-// Grid: 5 columns × 2 rows
-const COLS = 5
-const CARD_W = 236
+// Grid: 6 columns × 2 rows
+const COLS = 6
+const CARD_W = 202
 const CARD_H = 190
-const GAP_X = 15
+const GAP_X = 12
 const GAP_Y = 16
 const PREV_W = CARD_W - 20       // 216
 const PREV_H = 95                // ≈ 216/1280 * 560
@@ -28,6 +28,7 @@ const MAP_ORDER: MapId[] = [
   MapId.FrozenTundra, MapId.CandyCanyon, MapId.AncientRuins,
   MapId.LavaLair, MapId.DeepSea, MapId.DarkCastle,
   MapId.StormRidge, MapId.NeonCity,
+  MapId.TheGauntlet,
 ]
 
 export class MapSelectScene extends Phaser.Scene {
