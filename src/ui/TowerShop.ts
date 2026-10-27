@@ -4,6 +4,7 @@ import { TOWER_CONFIGS } from '../data/towers'
 import { HERO_CONFIGS } from '../data/heroes'
 import { gameState } from '../game/GameState'
 import { GAME_WIDTH, GAME_HEIGHT, HUD_BOTTOM_HEIGHT } from '../constants'
+import { drawHeroCrown, drawHeroIcon } from '../data/heroIcons'
 
 export class TowerShop {
   private scene: Phaser.Scene
@@ -73,9 +74,14 @@ export class TowerShop {
       // Portrait image (left side, 36×36)
       const imgX = x - 36
       let portrait: Phaser.GameObjects.Image | null = null
+      let heroIconGfx: Phaser.GameObjects.Graphics | null = null
       if (config.image && scene.textures.exists(config.id)) {
         portrait = scene.add.image(imgX, y, config.id)
         portrait.setDisplaySize(36, 36)
+      } else if (isHero) {
+        heroIconGfx = scene.add.graphics()
+        drawHeroIcon(heroIconGfx, config.id, imgX, y, 0.85)
+        drawHeroCrown(heroIconGfx, imgX, y, 0.85)
       }
 
       // Text shifted right to make room for portrait
@@ -118,6 +124,7 @@ export class TowerShop {
 
       const toAdd: Phaser.GameObjects.GameObject[] = [btnBg, nameLabel, costLabel]
       if (portrait) toAdd.push(portrait)
+      if (heroIconGfx) toAdd.push(heroIconGfx)
       if (heroTag) toAdd.push(heroTag)
       this.scrollContainer.add(toAdd)
       this.buttons.push({ config, bg: btnBg, label: nameLabel, costText: costLabel, portrait })

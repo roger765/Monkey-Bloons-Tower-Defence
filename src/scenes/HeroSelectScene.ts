@@ -3,6 +3,7 @@ import { GAME_WIDTH, GAME_HEIGHT } from '../constants'
 import { gameState } from '../game/GameState'
 import { HERO_CONFIGS } from '../data/heroes'
 import { TowerConfig } from '../types'
+import { drawHeroCrown, drawHeroIcon } from '../data/heroIcons'
 
 const CARD_W = 226
 const CARD_H = 452
@@ -115,18 +116,11 @@ export class HeroSelectScene extends Phaser.Scene {
     body.setStrokeStyle(3, 0xFFD700)
     toAdd.push(glow, body)
 
-    // Crown drawn on a graphics object at (0,0); draws at world coords
-    const crownGfx = this.add.graphics()
-    crownGfx.fillStyle(0xFFD700)
-    crownGfx.fillRect(iconX - 13, iconY + 4, 26, 8)    // base band
-    crownGfx.fillRect(iconX - 11, iconY - 10, 7, 14)   // left tooth
-    crownGfx.fillRect(iconX - 3,  iconY - 14, 7, 18)   // centre tooth
-    crownGfx.fillRect(iconX + 4,  iconY - 10, 7, 14)   // right tooth
-    crownGfx.fillStyle(0xFFFFFF, 0.9)
-    crownGfx.fillCircle(iconX - 8,  iconY - 11, 2.5)   // gem dots
-    crownGfx.fillCircle(iconX,      iconY - 15, 2.5)
-    crownGfx.fillCircle(iconX + 8,  iconY - 11, 2.5)
-    toAdd.push(crownGfx)
+    // Hero-specific icon plus the shared crown badge, drawn at world coords
+    const iconGfx = this.add.graphics()
+    drawHeroIcon(iconGfx, hero.id, iconX, iconY, 1.4)
+    drawHeroCrown(iconGfx, iconX, iconY, 1.4)
+    toAdd.push(iconGfx)
 
     // Name
     const nameText = this.add.text(iconX, iconY + 55, hero.name, {

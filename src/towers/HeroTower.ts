@@ -3,6 +3,7 @@ import { TowerConfig, UpgradeEffect } from '../types'
 import { BaseTower } from './BaseTower'
 import { Bloon, BloonManager } from '../game/BloonManager'
 import { ProjectileManager } from '../game/ProjectileManager'
+import { drawHeroCrown, drawHeroIcon } from '../data/heroIcons'
 
 export class HeroTower extends BaseTower {
   constructor(
@@ -26,26 +27,10 @@ export class HeroTower extends BaseTower {
     this.barrel.setFillStyle(0xFFD700)
     this.barrel.setStrokeStyle(1.5, 0xAA8800)
 
-    this.drawCrown()
-  }
-
-  private drawCrown(): void {
     const g = this.customGfx
     g.clear()
-    const GOLD = 0xFFD700
-
-    // Three crown teeth and a base drawn around the body centre
-    g.fillStyle(GOLD)
-    g.fillRect(-12, 1, 24, 7)    // crown base band
-    g.fillRect(-10, -9, 6, 11)   // left tooth
-    g.fillRect(-3, -13, 6, 15)   // centre tooth (tallest)
-    g.fillRect(4, -9, 6, 11)     // right tooth
-
-    // Small gem dots on each tooth tip
-    g.fillStyle(0xFFFFFF, 0.9)
-    g.fillCircle(-7, -10, 2)
-    g.fillCircle(0, -14, 2)
-    g.fillCircle(7, -10, 2)
+    drawHeroIcon(g, config.id, 0, 0)
+    drawHeroCrown(g, 0, 0)
   }
 
   attack(target: Bloon, _allBloons: Bloon[], _time: number): void {
